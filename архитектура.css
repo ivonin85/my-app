@@ -1,0 +1,34 @@
+my-app/
+│
+├── backend/
+│   ├── src/main/java/com/example/backend/
+│   │   ├── controller/
+│   │   │   └── AuthController.java
+│   │   │   └── UserProfileController.java
+│   │   ├── model/
+│   │   │   └── User.java
+│   │   ├── repository/
+│   │   │   └── UserRepository.java
+│   │   ├── security/
+│   │   │   └── JwtTokenProvider.java
+│   │   │   └── SecurityConfig.java
+│   │   ├── service/
+│   │   │   └── UserService.java
+│   │   └── BackendApplication.java
+│   ├── Dockerfile
+│   └── pom.xml
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── LoginPage.js
+│   │   │   └── RegisterPage.js
+│   │   │   └── ProfilePage.js
+│   │   ├── App.js
+│   │   ├── index.js
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   └── package.json
+│
+├── docker-compose.yml
+└── README.md
