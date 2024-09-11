@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './LoginPage.css';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -10,8 +11,7 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/login', { email, password });
-            localStorage.setItem('token', response.data.token);
+            await axios.post('http://localhost:8080/api/auth/login', { email, password }, { withCredentials: true });
             navigate('/profile');
         } catch (error) {
             console.error('Ошибка авторизации', error);
@@ -19,11 +19,21 @@ const LoginPage = () => {
     };
 
     return (
-        <div>
+        <div className="login-container">
             <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+            <form className="login-form" onSubmit={handleSubmit}>
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
+                />
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                />
                 <button type="submit">Login</button>
             </form>
         </div>

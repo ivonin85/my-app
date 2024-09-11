@@ -2,6 +2,7 @@ package com.example.backend.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,28 +25,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String token = getTokenFromRequest(request);
+        // Извлечение токена из Cookie
+        String token = getTokenFromCookie(request);
 
+        // Проверка токена на валидность
         if (token != null && jwtTokenProvider.isTokenValid(token)) {
-            String email = jwtTokenProvider.getEmailFromToken(token);
+            // Извлечение ID пользователя из токена
+            String userId = jwtTokenProvider.getUserIdFromToken(token);
 
-            // Создание объекта Authentication и установка в SecurityContextHolder
+            // Создание объекта аутентификации
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(email, null, new ArrayList<>());
+                    new UsernamePasswordAuthenticationToken(userId, null, new ArrayList<>());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            // Устанавливаем объект аутентификации в контекст безопасности
+            // Установка объекта аутентификации в SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        filterChain.doFilter(request, response); // Продолжаем выполнение фильтров
+        // Продолжаем выполнение следующего фильтра
+        filterChain.doFilter(request, response);
     }
 
-    // Метод для извлечения JWT токена из заголовка Authorization
-    private String getTokenFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+    // Метод для извлечения JWT токена из Cookie
+    private String getTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("auth_token".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
         }
         return null;
     }

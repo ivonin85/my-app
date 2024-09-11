@@ -6,7 +6,7 @@ const RegisterPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const history = useNavigate();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,11 +16,11 @@ const RegisterPage = () => {
         }
         try {
             const response = await axios.post('http://localhost:8080/api/auth/register', { email, password });
-            alert("Registration successful!");
-            history.push('/login');
+            alert("Регистрация прошла успешно! Сейчас вы будете перенаправлены на страницу авторизации!");
+            navigate('/login');
         } catch (error) {
             console.error('Ошибка регистрации', error);
-            alert("Registration failed!");
+            alert("Регистрация не удалась!");
         }
     };
 

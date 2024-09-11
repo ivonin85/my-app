@@ -1,10 +1,13 @@
 package com.example.backend.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,24 +23,29 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private long jwtExpirationInMillis;
 
+    private SecretKey key;
+
+    // Инициализация ключа
+    @PostConstruct
+    public void init() {
+        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+    }
+
     // Генерация JWT токена
-    public String createToken(String email) {
+    public String createToken(String userId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMillis);
 
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(userId)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key)
                 .compact();
     }
 
-    // Извлечение email из JWT токена
-    public String getEmailFromToken(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+    // Извлечение ID пользователя из JWT токена
+    public String getUserIdFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -49,11 +57,18 @@ public class JwtTokenProvider {
     // Проверка валидности JWT токена
     public boolean isTokenValid(String token) {
         try {
-            SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (SignatureException e) {
-            return false;
+        } catch (SignatureException | MalformedJwtException e) {
+            // Неверная подпись или токен поврежден
+            System.out.println("Invalid JWT signature or format: " + e.getMessage());
+        } catch (ExpiredJwtException e) {
+            // Срок действия токена истек
+            System.out.println("JWT token is expired: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            // Недопустимый аргумент при парсинге токена
+            System.out.println("JWT token compact of handler are invalid: " + e.getMessage());
         }
+        return false;
     }
 }
