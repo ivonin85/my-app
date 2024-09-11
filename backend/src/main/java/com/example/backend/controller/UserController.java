@@ -1,7 +1,7 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.UsersDto;
-import com.example.backend.service.UsersService;
+import com.example.backend.dto.ProfilesDto;
+import com.example.backend.service.ProfilesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,16 +13,19 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UsersService usersService;
+    private ProfilesService profilesService;
 
     // Получение профиля пользователя через SecurityContext (ID из токена)
     @GetMapping("/profile")
-    public ResponseEntity<UsersDto> getUserProfile() {
-        // Извлечение ID пользователя из SecurityContext
+    public ResponseEntity<ProfilesDto> getUserProfile() {
         String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        // Вызов сервиса для получения информации о пользователе
-        return usersService.getUserById(Long.parseLong(userId));
+        return profilesService.getUserProfile(Long.parseLong(userId));
     }
 
+    // Обновление профиля пользователя
+    @PutMapping("/profile")
+    public ResponseEntity<ProfilesDto> updateUserProfile(@RequestBody ProfilesDto profilesDto) {
+        String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return profilesService.updateUserProfile(Long.parseLong(userId), profilesDto);
+    }
 }
