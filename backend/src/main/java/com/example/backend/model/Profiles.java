@@ -19,9 +19,9 @@ public class Profiles {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Users user;
 
-    private String firstName;
-    private String lastName;
-    private String middleName;
+    private String name;
+    private String surname;
+    private String patronymic;
     private String dateOfBirth; // Используйте LocalDate, если хотите сохранять даты
     private String photoUrl; // Для хранения ссылки на фото
 }

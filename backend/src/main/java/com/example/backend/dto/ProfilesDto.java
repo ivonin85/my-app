@@ -6,9 +6,9 @@ import lombok.Data;
 public class ProfilesDto {
     private Long id;
     private Long userId;
-    private String firstName;
-    private String lastName;
-    private String middleName;
+    private String name;
+    private String surname;
+    private String patronymic;
     private String dateOfBirth;
     private String photoUrl;
 }

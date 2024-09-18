@@ -53,9 +53,9 @@ public class ProfilesService {
 
         if (profileOpt.isPresent()) {
             Profiles profile = profileOpt.get();
-            profile.setFirstName(profilesDto.getFirstName());
-            profile.setLastName(profilesDto.getLastName());
-            profile.setMiddleName(profilesDto.getMiddleName());
+            profile.setName(profilesDto.getName());
+            profile.setSurname(profilesDto.getSurname());
+            profile.setPatronymic(profilesDto.getPatronymic());
             profile.setDateOfBirth(profilesDto.getDateOfBirth());
             profile.setPhotoUrl(profilesDto.getPhotoUrl());
 
@@ -71,9 +71,9 @@ public class ProfilesService {
         ProfilesDto dto = new ProfilesDto();
         dto.setId(profile.getId());
         dto.setUserId(profile.getUser().getId());
-        dto.setFirstName(profile.getFirstName());
-        dto.setLastName(profile.getLastName());
-        dto.setMiddleName(profile.getMiddleName());
+        dto.setName(profile.getName());
+        dto.setSurname(profile.getSurname());
+        dto.setPatronymic(profile.getPatronymic());
         dto.setDateOfBirth(profile.getDateOfBirth());
         dto.setPhotoUrl(profile.getPhotoUrl());
         return dto;

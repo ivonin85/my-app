@@ -38,27 +38,27 @@ const ProfilePage = () => {
         <div>
             {userProfile ? (
                 <div>
-                    <h1>Добро пожаловать, {userProfile.firstName || 'Нет имени'} {userProfile.lastName || 'Нет фамилии'}</h1>
+                    <h1>Добро пожаловать, {userProfile.name || 'Нет имени'} {userProfile.surname || 'Нет фамилии'}</h1>
                     {editable ? (
                         <div>
                             <input
                                 type="text"
-                                name="firstName"
-                                value={userProfile.firstName || ''}
+                                name="name"
+                                value={userProfile.name || ''}
                                 onChange={handleInputChange}
                                 placeholder="Имя"
                             />
                             <input
                                 type="text"
-                                name="lastName"
-                                value={userProfile.lastName || ''}
+                                name="surname"
+                                value={userProfile.surname || ''}
                                 onChange={handleInputChange}
                                 placeholder="Фамилия"
                             />
                             <input
                                 type="text"
-                                name="middleName"
-                                value={userProfile.middleName || ''}
+                                name="patronymic"
+                                value={userProfile.patronymic || ''}
                                 onChange={handleInputChange}
                                 placeholder="Отчество"
                             />
@@ -79,9 +79,9 @@ const ProfilePage = () => {
                         </div>
                     ) : (
                         <div>
-                            <p><strong>Имя:</strong> {userProfile.firstName || 'Нет данных'}</p>
-                            <p><strong>Фамилия:</strong> {userProfile.lastName || 'Нет данных'}</p>
-                            <p><strong>Отчество:</strong> {userProfile.middleName || 'Нет данных'}</p>
+                            <p><strong>Имя:</strong> {userProfile.name || 'Нет данных'}</p>
+                            <p><strong>Фамилия:</strong> {userProfile.surname || 'Нет данных'}</p>
+                            <p><strong>Отчество:</strong> {userProfile.patronymic || 'Нет данных'}</p>
                             <p><strong>Дата рождения:</strong> {userProfile.dateOfBirth || 'Нет данных'}</p>
                             <p><strong>Фото:</strong> {userProfile.photoUrl ? <img src={userProfile.photoUrl} alt="Фото профиля" width="235" height="300"/> : 'Нет фото'}</p>
                             <button onClick={() => setEditable(true)}>Редактировать</button>
