@@ -1,8 +1,8 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.AuthRequest;
-import com.example.backend.dto.UsersDto;
-import com.example.backend.service.UsersService;
+import com.example.backend.dto.UserDto;
+import com.example.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +13,20 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     @Autowired
-    private UsersService usersService;
+    private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UsersDto usersDto) {
-        return usersService.register(usersDto);
+    public ResponseEntity<?> register(@RequestBody UserDto usersDto) {
+        return userService.register(usersDto);
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verifyEmail(@RequestParam("token") String token) {
+        return userService.verifyEmail(token);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
-        return usersService.login(authRequest);
+        return userService.login(authRequest);
     }
 }

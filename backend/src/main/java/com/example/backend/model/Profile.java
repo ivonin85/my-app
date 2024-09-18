@@ -3,12 +3,10 @@ package com.example.backend.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Entity
 @Data
 @Table(name = "profiles")
-public class Profiles {
+public class Profile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +15,7 @@ public class Profiles {
     // Связь с моделью Users
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private Users user;
+    private User user;
 
     private String name;
     private String surname;

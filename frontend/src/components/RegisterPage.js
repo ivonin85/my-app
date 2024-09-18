@@ -6,27 +6,28 @@ const RegisterPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            alert("Passwords do not match!");
+            setError("Пароли не совпадают!");
             return;
         }
+
         try {
             const response = await axios.post('http://localhost:8080/api/auth/register', { email, password });
-            alert("Регистрация прошла успешно! Сейчас вы будете перенаправлены на страницу авторизации!");
-            navigate('/login');
+            setMessage("Регистрация прошла успешно! Пожалуйста, проверьте свою почту для подтверждения.");
         } catch (error) {
-            console.error('Ошибка регистрации', error);
-            alert("Регистрация не удалась!");
+            setError(error.response.data || "Регистрация не удалась!");
         }
     };
 
     return (
         <div>
-            <h2>Register</h2>
+            <h2>Регистрация</h2>
             <form onSubmit={handleSubmit}>
                 <input 
                     type="email" 
@@ -39,18 +40,20 @@ const RegisterPage = () => {
                     type="password" 
                     value={password} 
                     onChange={(e) => setPassword(e.target.value)} 
-                    placeholder="Password" 
+                    placeholder="Пароль" 
                     required 
                 />
                 <input 
                     type="password" 
                     value={confirmPassword} 
                     onChange={(e) => setConfirmPassword(e.target.value)} 
-                    placeholder="Confirm Password" 
+                    placeholder="Повторите пароль" 
                     required 
                 />
-                <button type="submit">Register</button>
+                <button type="submit">Зарегистрироваться</button>
             </form>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {message && <p style={{ color: 'green' }}>{message}</p>}
         </div>
     );
 };
