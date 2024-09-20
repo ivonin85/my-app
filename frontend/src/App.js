@@ -4,6 +4,8 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import VerificationPage from './components/VerificationPage';
+import ProjectsPage from './components/ProjectsPage';
+import NewProjectPage from './components/NewProjectPage';
 
 function App() {
     return (
@@ -12,6 +14,8 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/verify" element={<VerificationPage />} />
+                <Route path="/projects" element={<ProjectsPage />} />
+                <Route path="/projects/new" element={<NewProjectPage />} />
             </Routes>
     );
 }

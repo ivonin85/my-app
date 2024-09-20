@@ -19,7 +19,7 @@ public class ProfileService {
     private ProfileRepository profilesRepository;
 
     @Autowired
-    private UserRepository usersRepository;
+    private UserRepository userRepository;
 
     // Метод получения профиля по ID пользователя
     public ResponseEntity<ProfileDto> getUserProfile(Long userId) {
@@ -33,7 +33,7 @@ public class ProfileService {
             return ResponseEntity.ok(profilesDto);
         } else {
             // Иначе создаем новый профиль, если его нет
-            Optional<User> userOpt = usersRepository.findById(userId);
+            Optional<User> userOpt = userRepository.findById(userId);
             if (userOpt.isPresent()) {
                 Profile newProfile = new Profile();
                 newProfile.setUser(userOpt.get());

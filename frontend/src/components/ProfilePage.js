@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const ProfilePage = () => {
     const [userProfile, setUserProfile] = useState(null);
@@ -85,6 +85,7 @@ const ProfilePage = () => {
                             <p><strong>Дата рождения:</strong> {userProfile.dateOfBirth || 'Нет данных'}</p>
                             <p><strong>Фото:</strong> {userProfile.photoUrl ? <img src={userProfile.photoUrl} alt="Фото профиля" width="235" height="300"/> : 'Нет фото'}</p>
                             <button onClick={() => setEditable(true)}>Редактировать</button>
+                            <Link to="/projects">Мои проекты</Link>
                         </div>
                     )}
                 </div>

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseCookie;
@@ -22,7 +23,7 @@ import java.util.UUID;
 public class UserService {
 
     @Autowired
-    private UserRepository usersRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -38,7 +39,7 @@ public class UserService {
 
     // Регистрация пользователя и отправка email для подтверждения
     public ResponseEntity<?> register(UserDto usersDto) {
-        if (usersRepository.findByEmail(usersDto.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(usersDto.getEmail()).isPresent()) {
             return new ResponseEntity<>("Email уже существует", HttpStatus.BAD_REQUEST);
         }
 
@@ -46,7 +47,7 @@ public class UserService {
         user.setEmail(usersDto.getEmail());
         user.setPassword(passwordEncoder.encode(usersDto.getPassword()));
         user.setEmailVerified(false); // Новый пользователь должен подтвердить email
-        usersRepository.save(user);
+        userRepository.save(user);
 
         // Генерация токена и отправка email
         String token = UUID.randomUUID().toString();
@@ -72,14 +73,14 @@ public class UserService {
         }
 
         user.setEmailVerified(true);
-        usersRepository.save(user);
+        userRepository.save(user);
 
         return new ResponseEntity<>("Email успешно подтвержден", HttpStatus.OK);
     }
 
     // Метод для авторизации пользователя
     public ResponseEntity<?> login(AuthRequest authRequest) {
-        Optional<User> userOpt = usersRepository.findByEmail(authRequest.getEmail());
+        Optional<User> userOpt = userRepository.findByEmail(authRequest.getEmail());
 
         // Проверка наличия пользователя и соответствия пароля
         if (userOpt.isPresent() && passwordEncoder.matches(authRequest.getPassword(), userOpt.get().getPassword())) {
