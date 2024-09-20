@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -32,21 +31,9 @@ public class ProjectController {
     @GetMapping
     public List<ProjectDTO> getProjectsByUser() {
         String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         return projectService.getProjectsByUser(Long.parseLong(userId));
     }
 
-    /*@GetMapping("/user/projects")
-    public List<ProjectDTO> getProjectsByUser() {
-        String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long parsedUserId = Long.parseLong(userId);
-
-        List<Project> projects = projectService.getProjectsByUser(parsedUserId);
-
-        return projects.stream()
-                .map(project -> mapToDTO(project))
-                .collect(Collectors.toList());
-    }*/
 
     @PostMapping
     public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO project) {

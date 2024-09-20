@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.ProjectDTO;
 import com.example.backend.model.Project;
 import com.example.backend.repository.ProjectRepository;
+import com.example.backend.service.mapper.ProjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,8 @@ public class ProjectService {
     private ProjectRepository projectRepository;
 
     public List<ProjectDTO> getProjectsByUser(Long userId) {
-        List<Project> projects = projectRepository.findByUserId(userId);
-        return projects.stream()
+        return projectRepository.findByUserId(userId)
+                .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
@@ -34,16 +35,12 @@ public class ProjectService {
     }
 
     public void deleteProject(Long id) {
+
         projectRepository.deleteById(id);
     }
 
     private ProjectDTO mapToDTO(Project project) {
-        ProjectDTO projectDTO = new ProjectDTO();
-        projectDTO.setId(project.getId());
-        projectDTO.setUserId(project.getUser().getId());
-        projectDTO.setTitle(project.getTitle());
-        projectDTO.setDescription(project.getDescription());
-        return projectDTO;
+        return ProjectMapper.INSTANCE.projectToProjectDTO(project);
     }
 
 }
