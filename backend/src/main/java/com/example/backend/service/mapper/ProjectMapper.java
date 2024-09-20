@@ -8,7 +8,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface ProjectMapper {
-
     ProjectMapper INSTANCE = Mappers.getMapper(ProjectMapper.class);
 
     @Mapping(source = "user.id", target = "userId")

@@ -5,6 +5,7 @@ import com.example.backend.model.Profile;
 import com.example.backend.model.User;
 import com.example.backend.repository.ProfileRepository;
 import com.example.backend.repository.UserRepository;
+import com.example.backend.service.mapper.ProfileMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,6 @@ public class ProfileService {
     @Autowired
     private UserRepository userRepository;
 
-    // Метод получения профиля по ID пользователя
     public ResponseEntity<ProfileDto> getUserProfile(Long userId) {
         // Получение профиля пользователя по userId
         Optional<Profile> profileOpt = profilesRepository.findByUserId(userId);
@@ -47,7 +47,6 @@ public class ProfileService {
         }
     }
 
-    // Метод обновления профиля пользователя
     public ResponseEntity<ProfileDto> updateUserProfile(Long userId, ProfileDto profilesDto) {
         Optional<Profile> profileOpt = profilesRepository.findByUserId(userId);
 
@@ -66,16 +65,7 @@ public class ProfileService {
         }
     }
 
-    // Метод для преобразования модели в DTO
     private ProfileDto mapToDto(Profile profile) {
-        ProfileDto dto = new ProfileDto();
-        dto.setId(profile.getId());
-        dto.setUserId(profile.getUser().getId());
-        dto.setName(profile.getName());
-        dto.setSurname(profile.getSurname());
-        dto.setPatronymic(profile.getPatronymic());
-        dto.setDateOfBirth(profile.getDateOfBirth());
-        dto.setPhotoUrl(profile.getPhotoUrl());
-        return dto;
+        return ProfileMapper.INSTANCE.profileToProfileDto(profile);
     }
 }

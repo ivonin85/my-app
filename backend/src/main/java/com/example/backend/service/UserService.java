@@ -10,11 +10,10 @@ import com.example.backend.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.http.ResponseCookie;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -32,7 +31,7 @@ public class UserService {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private VerificationTokenRepository tokenRepository; // Репозиторий для хранения токенов верификации
+    private VerificationTokenRepository tokenRepository;
 
     @Autowired
     private EmailService emailService; // Сервис для отправки email

@@ -83,7 +83,7 @@ const ProfilePage = () => {
                             <p><strong>Фамилия:</strong> {userProfile.surname || 'Нет данных'}</p>
                             <p><strong>Отчество:</strong> {userProfile.patronymic || 'Нет данных'}</p>
                             <p><strong>Дата рождения:</strong> {userProfile.dateOfBirth || 'Нет данных'}</p>
-                            <p><strong>Фото:</strong> {userProfile.photoUrl ? <img src={userProfile.photoUrl} alt="Фото профиля" width="235" height="300"/> : 'Нет фото'}</p>
+                            <p><strong>Фото:</strong> {userProfile.photoUrl ? <img src={userProfile.photoUrl} alt="Фото профиля" width="300" height="300"/> : 'Нет фото'}</p>
                             <button onClick={() => setEditable(true)}>Редактировать</button>
                             <Link to="/projects">Мои проекты</Link>
                         </div>
