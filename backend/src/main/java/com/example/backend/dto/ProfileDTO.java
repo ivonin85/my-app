@@ -3,7 +3,7 @@ package com.example.backend.dto;
 import lombok.Data;
 
 @Data
-public class ProfileDto {
+public class ProfileDTO {
     private Long id;
     private Long userId;
     private String name;

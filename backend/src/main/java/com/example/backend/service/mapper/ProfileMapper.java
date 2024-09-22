@@ -1,6 +1,6 @@
 package com.example.backend.service.mapper;
 
-import com.example.backend.dto.ProfileDto;
+import com.example.backend.dto.ProfileDTO;
 import com.example.backend.model.Profile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,5 +12,5 @@ public interface ProfileMapper {
     ProfileMapper INSTANCE = Mappers.getMapper(ProfileMapper.class);
 
     @Mapping(source = "user.id", target = "userId")
-    ProfileDto profileToProfileDto(Profile profile);
+    ProfileDTO profileToProfileDto(Profile profile);
 }

@@ -1,6 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.ProfileDto;
+import com.example.backend.dto.ProfileDTO;
 import com.example.backend.model.Profile;
 import com.example.backend.model.User;
 import com.example.backend.repository.ProfileRepository;
@@ -22,14 +22,14 @@ public class ProfileService {
     @Autowired
     private UserRepository userRepository;
 
-    public ResponseEntity<ProfileDto> getUserProfile(Long userId) {
+    public ResponseEntity<ProfileDTO> getUserProfile(Long userId) {
         // Получение профиля пользователя по userId
         Optional<Profile> profileOpt = profilesRepository.findByUserId(userId);
 
         // Если профиль существует, возвращаем его
         if (profileOpt.isPresent()) {
             Profile profile = profileOpt.get();
-            ProfileDto profilesDto = mapToDto(profile);
+            ProfileDTO profilesDto = mapToDto(profile);
             return ResponseEntity.ok(profilesDto);
         } else {
             // Иначе создаем новый профиль, если его нет
@@ -47,7 +47,7 @@ public class ProfileService {
         }
     }
 
-    public ResponseEntity<ProfileDto> updateUserProfile(Long userId, ProfileDto profilesDto) {
+    public ResponseEntity<ProfileDTO> updateUserProfile(Long userId, ProfileDTO profilesDto) {
         Optional<Profile> profileOpt = profilesRepository.findByUserId(userId);
 
         if (profileOpt.isPresent()) {
@@ -65,7 +65,7 @@ public class ProfileService {
         }
     }
 
-    private ProfileDto mapToDto(Profile profile) {
+    private ProfileDTO mapToDto(Profile profile) {
         return ProfileMapper.INSTANCE.profileToProfileDto(profile);
     }
 }

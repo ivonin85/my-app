@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom'; // Импортируем useNavigate
+import { useParams, useNavigate, Link } from 'react-router-dom'; // Добавили Link для ссылки на создание модуля
 
 const ProjectDetailsPage = () => {
     const { id } = useParams(); // Получаем id проекта из URL
@@ -29,6 +29,11 @@ const ProjectDetailsPage = () => {
             
             {/* Кнопка для перехода на страницу редактирования */}
             <button onClick={handleEditClick}>Редактировать проект</button>
+
+            {/* Ссылка на страницу создания модуля для данного проекта */}
+            <Link to={`/projects/${id}/modules/new`}>
+                <button>Создать новый модуль</button>
+            </Link>
         </div>
     );
 };
