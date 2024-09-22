@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.ProjectDTO;
 import com.example.backend.model.Project;
 import com.example.backend.model.User;
+import com.example.backend.repository.ProjectRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.ProjectService;
 import com.example.backend.service.UserService;
@@ -27,6 +28,9 @@ public class ProjectController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @GetMapping
     public List<ProjectDTO> getProjectsByUser() {
@@ -69,5 +73,11 @@ public class ProjectController {
     @DeleteMapping("/{id}")
     public void deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
+        ProjectDTO projectDTO = projectService.getProjectById(id);
+        return projectDTO != null ? ResponseEntity.ok().body(projectDTO) : ResponseEntity.notFound().build();
     }
 }

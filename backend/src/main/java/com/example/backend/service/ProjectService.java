@@ -24,6 +24,7 @@ public class ProjectService {
     }
 
     public Project createProject(Project project) {
+
         return projectRepository.save(project);
     }
 
@@ -37,6 +38,12 @@ public class ProjectService {
     public void deleteProject(Long id) {
 
         projectRepository.deleteById(id);
+    }
+
+    public ProjectDTO getProjectById(Long id) {
+        return projectRepository.findById(id)
+                .map(this::mapToDTO)
+                .orElse(null);
     }
 
     private ProjectDTO mapToDTO(Project project) {

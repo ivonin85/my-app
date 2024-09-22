@@ -24,7 +24,9 @@ const ProjectsPage = () => {
             <ul>
                 {projects.map(project => (
                     <li key={project.id}>
-                        <h2>{project.title}</h2>
+                        <Link to={`/projects/${project.id}`}>
+                            <h2>{project.title}</h2>
+                        </Link>
                         <p>{project.description}</p>
                         <button onClick={() => handleDelete(project.id)}>Удалить</button>
                     </li>

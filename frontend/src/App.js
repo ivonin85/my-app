@@ -6,6 +6,7 @@ import ProfilePage from './components/ProfilePage';
 import VerificationPage from './components/VerificationPage';
 import ProjectsPage from './components/ProjectsPage';
 import NewProjectPage from './components/NewProjectPage';
+import ProjectDetailsPage from './components/ProjectDetailsPage';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                 <Route path="/verify" element={<VerificationPage />} />
                 <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/projects/new" element={<NewProjectPage />} />
+                <Route path="/projects/:id" element={<ProjectDetailsPage/>} />
             </Routes>
     );
 }
