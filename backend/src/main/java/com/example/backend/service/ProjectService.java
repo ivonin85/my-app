@@ -4,6 +4,7 @@ import com.example.backend.dto.ProjectDTO;
 import com.example.backend.model.Project;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.service.mapper.ProjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +29,15 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Project updateProject(Long id, Project updatedProject) {
-        Project project = projectRepository.findById(id).orElseThrow();
-        project.setTitle(updatedProject.getTitle());
-        project.setDescription(updatedProject.getDescription());
-        return projectRepository.save(project);
+    public ProjectDTO updateProject(Long id, ProjectDTO projectDTO) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Проект не найден"));
+
+        project.setTitle(projectDTO.getTitle());
+        project.setDescription(projectDTO.getDescription());
+
+        Project savedProject = projectRepository.save(project);
+        return mapToDTO(savedProject);
     }
 
     public void deleteProject(Long id) {
