@@ -30,7 +30,7 @@ const ModuleEditPage = () => {
         axios.put(`http://localhost:8080/api/modules/${moduleId}`, moduleData, { withCredentials: true })
             .then(() => {
                 alert('Модуль обновлён успешно!');
-                navigate(`/projects/${projectId}/modules/new`); // Переход к списку модулей
+                navigate(`/projects/${projectId}/modules`); // Переход к списку модулей
             })
             .catch(error => console.error('Ошибка при обновлении модуля', error));
     };

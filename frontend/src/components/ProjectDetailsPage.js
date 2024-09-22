@@ -31,7 +31,7 @@ const ProjectDetailsPage = () => {
             <button onClick={handleEditClick}>Редактировать проект</button>
 
             {/* Ссылка на страницу создания модуля для данного проекта */}
-            <Link to={`/projects/${id}/modules/new`}>
+            <Link to={`/projects/${id}/modules`}>
                 <button>Создать новый модуль</button>
             </Link>
         </div>

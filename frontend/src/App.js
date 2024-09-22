@@ -23,7 +23,7 @@ function App() {
                 <Route path="/projects/:id" element={<ProjectDetailsPage/>} />
                 <Route path="/projects/:id/edit" element={<ProjectEditPage />} />
                 <Route path="/modules" element={<ModuleForm />} />
-                <Route path="/projects/:projectId/modules/new" element={<ModuleForm />} />
+                <Route path="/projects/:projectId/modules" element={<ModuleForm />} />
                 <Route path="/projects/:projectId/modules/:moduleId/edit" element={<ModuleEditPage />} />
             </Routes>
     );
