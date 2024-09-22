@@ -9,6 +9,7 @@ import NewProjectPage from './components/NewProjectPage';
 import ProjectDetailsPage from './components/ProjectDetailsPage';
 import ProjectEditPage from './components/ProjectEditPage';
 import ModuleForm from './components/ModuleForm';
+import ModuleEditPage from './components/ModuleEditPage';
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/projects/:id/edit" element={<ProjectEditPage />} />
                 <Route path="/modules" element={<ModuleForm />} />
                 <Route path="/projects/:projectId/modules/new" element={<ModuleForm />} />
+                <Route path="/projects/:projectId/modules/:moduleId/edit" element={<ModuleEditPage />} />
             </Routes>
     );
 }

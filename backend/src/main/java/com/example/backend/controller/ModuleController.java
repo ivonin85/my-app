@@ -28,5 +28,22 @@ public class ModuleController {
         return ResponseEntity.ok(modules);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ModuleDTO> getModuleById(@PathVariable Long id) {
+        ModuleDTO moduleDTO = moduleService.getModuleById(id);
+        return ResponseEntity.ok(moduleDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ModuleDTO> updateModule(@PathVariable Long id, @RequestBody ModuleDTO moduleDTO) {
+        ModuleDTO updatedModule = moduleService.updateModule(id, moduleDTO);
+        return ResponseEntity.ok(updatedModule);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteModule(@PathVariable Long id) {
+        moduleService.deleteModule(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }

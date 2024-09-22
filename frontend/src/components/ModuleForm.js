@@ -1,36 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom'; // Для получения projectId из URL
+import { useParams, useNavigate } from 'react-router-dom';
 
 const ModuleForm = () => {
-    const { projectId } = useParams(); // Получаем ID проекта из URL
+    const { projectId } = useParams();
     const [name, setName] = useState('');
     const [parentId, setParentId] = useState(null);
     const [modules, setModules] = useState([]);
+    const navigate = useNavigate();
 
-    // Получаем все модули, связанные с текущим проектом
     useEffect(() => {
         axios.get(`http://localhost:8080/api/modules/project/${projectId}`, { withCredentials: true })
             .then(response => setModules(response.data))
             .catch(error => console.error('Ошибка при загрузке модулей', error));
     }, [projectId]);
 
-    // Обработка отправки формы
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8080/api/modules', 
-            { name, parentId, projectId },  // Отправляем projectId вместе с другими данными
-            { withCredentials: true }
-        )
-        .then(() => {
-            setName('');
-            setParentId(null);
-            alert('Модуль создан успешно!');
-            // Обновляем список модулей после создания нового
-            return axios.get(`http://localhost:8080/api/modules/project/${projectId}`, { withCredentials: true });
-        })
-        .then(response => setModules(response.data))
-        .catch(error => console.error('Ошибка при создании модуля', error));
+        const moduleData = { name, parentId, projectId };
+        axios.post('http://localhost:8080/api/modules', moduleData, { withCredentials: true })
+            .then(() => {
+                setName('');
+                setParentId(null);
+                alert('Модуль создан успешно!');
+                return axios.get(`http://localhost:8080/api/modules/project/${projectId}`, { withCredentials: true });
+            })
+            .then(response => setModules(response.data))
+            .catch(error => console.error('Ошибка при создании модуля', error));
+    };
+
+    const handleEdit = (moduleId) => {
+        navigate(`/projects/${projectId}/modules/${moduleId}/edit`);
+    };
+
+    const handleDelete = (moduleId) => {
+        if (window.confirm("Вы уверены, что хотите удалить этот модуль?")) {
+            axios.delete(`http://localhost:8080/api/modules/${moduleId}`, { withCredentials: true })
+                .then(() => {
+                    alert("Модуль удален!");
+                    return axios.get(`http://localhost:8080/api/modules/project/${projectId}`, { withCredentials: true });
+                })
+                .then(response => setModules(response.data))
+                .catch(error => console.error('Ошибка при удалении модуля', error));
+        }
     };
 
     return (
@@ -64,7 +76,11 @@ const ModuleForm = () => {
             <h2>Список модулей проекта</h2>
             <ul>
                 {modules.map(module => (
-                    <li key={module.id}>{module.name} (ID: {module.id})</li>
+                    <li key={module.id}>
+                        {module.name} (ID: {module.id}) 
+                        <button onClick={() => handleEdit(module.id)}>Редактировать</button>
+                        <button onClick={() => handleDelete(module.id)}>Удалить</button>
+                    </li>
                 ))}
             </ul>
         </div>

@@ -30,6 +30,16 @@ public class ModuleService {
         return modules.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    public ModuleDTO getModuleById(Long moduleId) {
+        Module module = moduleRepository.findById(moduleId)
+                .orElseThrow(() -> new RuntimeException("Module not found with id " + moduleId));
+        return convertToDTO(module);
+    }
+
+    public void deleteModule(Long moduleId) {
+        moduleRepository.deleteById(moduleId);
+    }
+
     public ModuleDTO createModule(ModuleDTO moduleDTO) {
         // Получаем проект по projectId
         Project project = projectRepository.findById(moduleDTO.getProjectId())
@@ -52,6 +62,23 @@ public class ModuleService {
 
         // Возвращаем DTO после сохранения
         return convertToDTO(savedModule);
+    }
+
+    public ModuleDTO updateModule(Long moduleId, ModuleDTO moduleDTO) {
+        Module module = moduleRepository.findById(moduleId)
+                .orElseThrow(() -> new RuntimeException("Module not found"));
+
+        module.setName(moduleDTO.getName());
+        if (moduleDTO.getParentId() != null) {
+            Module parentModule = moduleRepository.findById(moduleDTO.getParentId())
+                    .orElseThrow(() -> new RuntimeException("Parent module not found"));
+            module.setParent(parentModule);
+        } else {
+            module.setParent(null);
+        }
+
+        Module updatedModule = moduleRepository.save(module);
+        return convertToDTO(updatedModule);
     }
 
     // Метод для конвертации Module в ModuleDTO
