@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import TestCaseList from './TestCaseList';
 
 const ModuleDetailsPage = () => {
-    const { moduleId } = useParams(); // Получаем ID модуля из URL
+    const { moduleId, projectId } = useParams();
     const [module, setModule] = useState(null);
 
     useEffect(() => {
@@ -22,6 +23,10 @@ const ModuleDetailsPage = () => {
             <p>ID: {module.id}</p>
             <p>Описание: {module.description || "Нет описания"}</p>
             {module.parentId && <p>Родительский модуль ID: {module.parentId}</p>}
+
+            {/* Список тест-кейсов для этого модуля */}
+            <TestCaseList />
+
         </div>
     );
 };

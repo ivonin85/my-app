@@ -19,7 +19,8 @@ const RegisterPage = () => {
 
         try {
             const response = await axios.post('http://localhost:8080/api/auth/register', { email, password });
-            setMessage("Регистрация прошла успешно! Пожалуйста, проверьте свою почту для подтверждения.");
+            alert("Регистрация прошла успешно! Пожалуйста, проверьте свою почту для подтверждения.");
+            navigate('/login');
         } catch (error) {
             setError(error.response.data || "Регистрация не удалась!");
         }
