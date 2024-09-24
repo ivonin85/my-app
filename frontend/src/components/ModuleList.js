@@ -1,6 +1,6 @@
 import React from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom'; // Добавили Link для ссылок на детали модуля
+import { useNavigate, Link } from 'react-router-dom';
+import ModuleService from '../services/ModuleService';
 
 const ModuleList = ({ modules, projectId, refreshModules }) => {
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const ModuleList = ({ modules, projectId, refreshModules }) => {
 
     const handleDelete = (moduleId) => {
         if (window.confirm("Вы уверены, что хотите удалить этот модуль?")) {
-            axios.delete(`http://localhost:8080/api/modules/${moduleId}`, { withCredentials: true })
+            ModuleService.deleteModule(moduleId)
                 .then(() => {
                     alert("Модуль удален!");
                     refreshModules(); // Обновляем список модулей после удаления

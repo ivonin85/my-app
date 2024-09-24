@@ -1,6 +1,6 @@
-import React, { useState, useEffect} from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import ModuleService from '../services/ModuleService'; // Импортируем сервис
 
 const ModuleForm = () => {
     const { projectId } = useParams(); // Получаем ID проекта из URL
@@ -11,7 +11,7 @@ const ModuleForm = () => {
 
     // Получаем доступные модули для выбора родителя
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/modules/project/${projectId}`, { withCredentials: true })
+        ModuleService.getModulesByProjectId(projectId)
             .then(response => setModules(response.data))
             .catch(error => console.error('Ошибка при загрузке модулей', error));
     }, [projectId]);
@@ -21,7 +21,7 @@ const ModuleForm = () => {
         const moduleData = { name, parentId, projectId };
         
         // Отправляем запрос на создание модуля
-        axios.post('http://localhost:8080/api/modules', moduleData, { withCredentials: true })
+        ModuleService.createModule(moduleData)
             .then(() => {
                 setName('');
                 setParentId(null);

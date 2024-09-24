@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import AuthService from '../services/AuthService';
 
 const RegisterPage = () => {
     const [email, setEmail] = useState('');
@@ -18,11 +18,11 @@ const RegisterPage = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/register', { email, password });
+            await AuthService.register(email, password);
             alert("Регистрация прошла успешно! Пожалуйста, проверьте свою почту для подтверждения.");
             navigate('/login');
         } catch (error) {
-            setError(error.response.data || "Регистрация не удалась!");
+            setError(error.response?.data || "Регистрация не удалась!");
         }
     };
 

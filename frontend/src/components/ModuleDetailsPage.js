@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import TestCaseList from './TestCaseList';
+import ModuleService from '../services/ModuleService';
 
 const ModuleDetailsPage = () => {
     const { moduleId, projectId } = useParams();
     const [module, setModule] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/modules/${moduleId}`, { withCredentials: true })
+        ModuleService.getModuleById(moduleId)
             .then(response => setModule(response.data))
             .catch(error => console.error('Ошибка при загрузке модуля', error));
     }, [moduleId]);
@@ -26,7 +26,6 @@ const ModuleDetailsPage = () => {
 
             {/* Список тест-кейсов для этого модуля */}
             <TestCaseList />
-
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import ModuleService from '../services/ModuleService';
 
 const ModuleEditPage = () => {
     const { projectId, moduleId } = useParams();
@@ -11,7 +11,7 @@ const ModuleEditPage = () => {
 
     useEffect(() => {
         // Получаем данные модуля для редактирования
-        axios.get(`http://localhost:8080/api/modules/${moduleId}`, { withCredentials: true })
+        ModuleService.getModuleById(moduleId)
             .then(response => {
                 setName(response.data.name);
                 setParentId(response.data.parentId);
@@ -19,7 +19,7 @@ const ModuleEditPage = () => {
             .catch(error => console.error('Ошибка при загрузке модуля', error));
 
         // Получаем все модули для выбора родительского
-        axios.get(`http://localhost:8080/api/modules/project/${projectId}`, { withCredentials: true })
+        ModuleService.getModulesByProjectId(projectId)
             .then(response => setModules(response.data))
             .catch(error => console.error('Ошибка при загрузке модулей', error));
     }, [projectId, moduleId]);
@@ -27,10 +27,10 @@ const ModuleEditPage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const moduleData = { name, parentId, projectId };
-        axios.put(`http://localhost:8080/api/modules/${moduleId}`, moduleData, { withCredentials: true })
+        ModuleService.updateModule(moduleId, moduleData)
             .then(() => {
                 alert('Модуль обновлён успешно!');
-                navigate(`/projects/${projectId}/modules`); // Переход к списку модулей
+                navigate(`/projects/${projectId}/modules`);
             })
             .catch(error => console.error('Ошибка при обновлении модуля', error));
     };
