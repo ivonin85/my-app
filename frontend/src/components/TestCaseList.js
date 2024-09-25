@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
+import TestCaseService from '../services/TestCaseService';
 
 const TestCaseList = () => {
     const { moduleId, projectId } = useParams();  // Получаем ID модуля и проекта из URL
     const [testCases, setTestCases] = useState([]);
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/testcases/module/${moduleId}`, { withCredentials: true })
+        TestCaseService.getTestCasesByModuleId(moduleId)
             .then(response => setTestCases(response.data))
             .catch(error => console.error('Ошибка при загрузке тест-кейсов', error));
     }, [moduleId]);

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate, Link } from 'react-router-dom'; // Добавили Link для ссылки на создание модуля
-import ModuleList from './ModuleList'; // Импортируем компонент для отображения списка модулей
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import ModuleList from './ModuleList';
+import ModuleService from '../services/ModuleService';
+import ProjectService from '../services/ProjectService';
 
 const ProjectDetailsPage = () => {
     const { id } = useParams(); // Получаем id проекта из URL
@@ -11,14 +12,15 @@ const ProjectDetailsPage = () => {
 
     // Получаем данные проекта
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/projects/${id}`, { withCredentials: true })
+        // Пример, если у тебя есть ProjectService
+        ProjectService.getProjectById(id)
             .then(response => setProject(response.data))
             .catch(error => console.error('Ошибка при загрузке проекта', error));
     }, [id]);
 
     // Получаем список модулей для данного проекта
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/modules/project/${id}`, { withCredentials: true })
+        ModuleService.getModulesByProjectId(id)
             .then(response => setModules(response.data))
             .catch(error => console.error('Ошибка при загрузке модулей', error));
     }, [id]);
@@ -28,12 +30,12 @@ const ProjectDetailsPage = () => {
     }
 
     const handleEditClick = () => {
-        navigate(`/projects/${id}/edit`); // Переход на страницу редактирования проекта
+        navigate(`/projects/${id}/edit`);
     };
 
     // Обновляем список модулей после удаления
     const refreshModules = () => {
-        axios.get(`http://localhost:8080/api/modules/project/${id}`, { withCredentials: true })
+        ModuleService.getModulesByProjectId(id)
             .then(response => setModules(response.data))
             .catch(error => console.error('Ошибка при обновлении модулей', error));
     };

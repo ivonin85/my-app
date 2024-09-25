@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import TestCaseService from '../services/TestCaseService';
+import TagService from '../services/TagService';
+import ProfileService from '../services/ProfileService';
 
 const TestCaseForm = () => {
     const { testCaseId } = useParams();  // Получаем projectId и moduleId из URL
@@ -22,18 +24,18 @@ const TestCaseForm = () => {
 
     useEffect(() => {
         // Загрузка всех доступных тегов
-        axios.get('http://localhost:8080/api/tags', { withCredentials: true })
+        TagService.getAllTags()
             .then(response => setAllTags(response.data))
             .catch(error => console.error('Ошибка при загрузке тегов', error));
 
         // Получение текущего пользователя для установки как executorId
-        axios.get('http://localhost:8080/api/users/profile', { withCredentials: true })
-            .then(response => setExecutorId(response.data.id))  // Записываем ID текущего пользователя
+        ProfileService.getUserProfile()
+            .then(response => setExecutorId(response.data.id))
             .catch(error => console.error('Ошибка при загрузке профиля', error));
 
         // Если редактируем существующий тест-кейс, загружаем его данные
         if (testCaseId) {
-            axios.get(`http://localhost:8080/api/testcases/${testCaseId}`, { withCredentials: true })
+            TestCaseService.getTestCase(testCaseId)
                 .then(response => {
                     const testCase = response.data;
                     setTitle(testCase.title);
@@ -85,8 +87,8 @@ const TestCaseForm = () => {
         };
 
         const request = testCaseId
-            ? axios.put(`http://localhost:8080/api/testcases/${testCaseId}`, testCaseData, { withCredentials: true })
-            : axios.post('http://localhost:8080/api/testcases', testCaseData, { withCredentials: true });
+            ? TestCaseService.updateTestCase(testCaseId, testCaseData)
+            : TestCaseService.createTestCase(testCaseData);
 
         request
             .then(() => {

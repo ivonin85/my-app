@@ -5,7 +5,7 @@ import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import VerificationPage from './components/VerificationPage';
 import ProjectsPage from './components/ProjectsPage';
-import NewProjectPage from './components/NewProjectPage';
+import ProjectCreatePage from './components/ProjectCreatePage';
 import ProjectDetailsPage from './components/ProjectDetailsPage';
 import ProjectEditPage from './components/ProjectEditPage';
 import ModuleForm from './components/ModuleForm';
@@ -21,7 +21,7 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/verify" element={<VerificationPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/new" element={<NewProjectPage />} />
+            <Route path="/projects/new" element={<ProjectCreatePage />} />
             <Route path="/projects/:id" element={<ProjectDetailsPage />} />
             <Route path="/projects/:id/edit" element={<ProjectEditPage />} />
             <Route path="/modules" element={<ModuleForm />} />

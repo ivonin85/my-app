@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import ProfileService from '../services/ProfileService';
 
 const ProfilePage = () => {
     const [userProfile, setUserProfile] = useState(null);
@@ -8,7 +8,7 @@ const ProfilePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/users/profile', { withCredentials: true })
+        ProfileService.getUserProfile()
             .then(response => {
                 setUserProfile(response.data);
             })
@@ -24,7 +24,7 @@ const ProfilePage = () => {
     };
 
     const handleSave = () => {
-        axios.put('http://localhost:8080/api/users/profile', userProfile, { withCredentials: true })
+        ProfileService.updateUserProfile(userProfile)
             .then(response => {
                 setEditable(false);
                 setUserProfile(response.data);

@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import ProjectService from '../services/ProjectService';
 
 const ProjectsPage = () => {
     const [projects, setProjects] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/projects', { withCredentials: true })
+        ProjectService.getAllProjects()
             .then(response => setProjects(response.data))
             .catch(error => console.error('Ошибка при загрузке проектов', error));
     }, []);
 
     const handleDelete = (projectId) => {
-        axios.delete(`http://localhost:8080/api/projects/${projectId}`, { withCredentials: true })
-            .then(() => setProjects(projects.filter(project => project.id !== projectId)))
-            .catch(error => console.error('Ошибка при удалении проекта', error));
+        if (window.confirm("Вы уверены, что хотите удалить этот проект?")) {
+            ProjectService.deleteProject(projectId)
+                .then(() => {
+                    setProjects(projects.filter(project => project.id !== projectId));
+                    alert("Проект удален!");
+                })
+                .catch(error => console.error('Ошибка при удалении проекта', error));
+        }
+            
     };
 
     return (

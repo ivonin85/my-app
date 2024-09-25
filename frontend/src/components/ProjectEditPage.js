@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import ProjectService from '../services/ProjectService';
 
 const ProjectEditPage = () => {
-    const { id } = useParams(); // Получаем id проекта из URL
-    const navigate = useNavigate(); // Для навигации после обновления
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [project, setProject] = useState({ title: '', description: '' });
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/projects/${id}`, { withCredentials: true })
+        ProjectService.getProjectById(id)
             .then(response => {
                 setProject(response.data);
                 setIsLoading(false);
@@ -24,8 +24,8 @@ const ProjectEditPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:8080/api/projects/${id}`, project, { withCredentials: true })
-            .then(() => navigate(`/projects/${id}`)) // Переход на страницу проекта после успешного редактирования
+        ProjectService.updateProject(id, project)
+            .then(() => navigate(`/projects/${id}`))
             .catch(error => console.error('Ошибка при обновлении проекта', error));
     };
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import ProjectService from '../services/ProjectService';
 
-const NewProjectPage = () => {
+const ProjectCreatePage = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const navigate = useNavigate();
@@ -11,10 +11,10 @@ const NewProjectPage = () => {
         e.preventDefault();
         const newProject = { title, description };
 
-        axios.post('http://localhost:8080/api/projects', newProject, { withCredentials: true })
+        ProjectService.createProject(newProject)
             .then(response => {
                 console.log('Проект создан:', response.data);
-                navigate('/projects'); // После успешного создания, перенаправляем на страницу проектов
+                navigate('/projects');
             })
             .catch(error => {
                 console.error('Ошибка при создании проекта:', error);
@@ -49,4 +49,4 @@ const NewProjectPage = () => {
     );
 };
 
-export default NewProjectPage;
+export default ProjectCreatePage;
