@@ -25,14 +25,21 @@ public class TestCaseController {
         return ResponseEntity.ok(testCaseService.getTestCasesByModule(moduleId));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TestCaseDTO> updateTestCase(@PathVariable Long id, @RequestBody TestCaseDTO testCaseDTO) {
-        return ResponseEntity.ok(testCaseService.updateTestCase(id, testCaseDTO));
+    // Получение тест-кейса по ID для просмотра или редактирования
+    @GetMapping("/{testCaseId}")
+    public ResponseEntity<TestCaseDTO> getTestCaseById(@PathVariable Long testCaseId) {
+        TestCaseDTO testCase = testCaseService.getTestCaseById(testCaseId);
+        return ResponseEntity.ok(testCase);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTestCase(@PathVariable Long id) {
-        testCaseService.deleteTestCase(id);
+    @PutMapping("/{testCaseId}")
+    public ResponseEntity<TestCaseDTO> updateTestCase(@PathVariable Long testCaseId, @RequestBody TestCaseDTO testCaseDTO) {
+        return ResponseEntity.ok(testCaseService.updateTestCase(testCaseId, testCaseDTO));
+    }
+
+    @DeleteMapping("/{testCaseId}")
+    public ResponseEntity<Void> deleteTestCase(@PathVariable Long testCaseId) {
+        testCaseService.deleteTestCase(testCaseId);
         return ResponseEntity.noContent().build();
     }
 }

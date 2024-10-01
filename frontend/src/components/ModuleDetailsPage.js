@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import TestCaseList from './TestCaseList';
 import ModuleService from '../services/ModuleService';
+import Navbar from '../pages/Navbar';
 
 const ModuleDetailsPage = () => {
     const { moduleId, projectId } = useParams();
@@ -18,7 +19,7 @@ const ModuleDetailsPage = () => {
     }
 
     return (
-        <div>
+        <div><div><Navbar /></div>
             <h1>{module.name}</h1>
             <p>ID: {module.id}</p>
             <p>Описание: {module.description || "Нет описания"}</p>

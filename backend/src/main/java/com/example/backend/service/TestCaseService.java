@@ -28,12 +28,31 @@ public class TestCaseService {
         return testCases.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public TestCaseDTO updateTestCase(Long id, TestCaseDTO testCaseDTO) {
-        TestCase testCase = testCaseRepository.findById(id).orElseThrow();
-        // Update fields here
-        testCase = testCaseRepository.save(testCase);
+    public TestCaseDTO getTestCaseById(Long testCaseId) {
+        TestCase testCase = testCaseRepository.findById(testCaseId)
+                .orElseThrow(() -> new RuntimeException("Тест-кейс не найден с ID: " + testCaseId));
         return mapToDTO(testCase);
     }
+
+    public TestCaseDTO updateTestCase(Long id, TestCaseDTO testCaseDTO) {
+        // Находим существующий тест-кейс или выбрасываем исключение, если не найден
+        TestCase existingTestCase = testCaseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Test case not found with id: " + id));
+
+        // Преобразуем DTO в новую сущность TestCase, при этом обновим только поля, которые изменяются
+        TestCase updatedTestCase = mapToEntity(testCaseDTO);
+
+        // Сохраняем неизменяемые поля, такие как id, createdAt
+        updatedTestCase.setId(existingTestCase.getId());
+        updatedTestCase.setCreatedAt(existingTestCase.getCreatedAt());
+
+        // Сохраняем изменения в базу данных
+        TestCase savedTestCase = testCaseRepository.save(updatedTestCase);
+
+        // Преобразуем сохраненный тест-кейс обратно в DTO и возвращаем
+        return mapToDTO(savedTestCase);
+    }
+
 
     public void deleteTestCase(Long id) {
         testCaseRepository.deleteById(id);

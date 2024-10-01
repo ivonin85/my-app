@@ -39,7 +39,8 @@ const TestCaseList = () => {
                             <td>{new Date(testCase.createdAt).toLocaleDateString()}</td>
                             <td>{testCase.executor ? testCase.executor.id : 'Не назначен'}</td>
                             <td>
-                                <Link to={`/projects/${projectId}/modules/${moduleId}/testcases/${testCase.id}`}>
+                                {/* Обновили путь */}
+                                <Link to={`/testcases/${testCase.id}`} state={{ projectId, moduleId }}>
                                     Просмотр
                                 </Link>
                             </td>

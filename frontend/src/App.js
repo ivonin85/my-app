@@ -11,7 +11,7 @@ import ProjectEditPage from './components/ProjectEditPage';
 import ModuleForm from './components/ModuleForm';
 import ModuleEditPage from './components/ModuleEditPage';
 import ModuleDetailsPage from './components/ModuleDetailsPage';
-import TestCaseForm from './components/TestCaseForm'; // Импорт компонента формы тест-кейса
+import TestCaseForm from './components/TestCaseForm';
 
 function App() {
     return (
@@ -29,6 +29,7 @@ function App() {
             <Route path="/projects/:projectId/modules/:moduleId" element={<ModuleDetailsPage />} />
             <Route path="/projects/:projectId/modules/:moduleId/edit" element={<ModuleEditPage />} />
             <Route path="/testcases/create" element={<TestCaseForm />} />
+            <Route path="/testcases/:testCaseId" element={<TestCaseForm />} />
             <Route path="/projects/:projectId/modules/:moduleId/testcases/:testCaseId/edit" element={<TestCaseForm />} />
         </Routes>
     );

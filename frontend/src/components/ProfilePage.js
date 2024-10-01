@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ProfileService from '../services/ProfileService';
+import Navbar from '../pages/Navbar';
 
 const ProfilePage = () => {
     const [userProfile, setUserProfile] = useState(null);
@@ -36,6 +37,7 @@ const ProfilePage = () => {
 
     return (
         <div>
+            <div><Navbar /></div>
             {userProfile ? (
                 <div>
                     <h1>Добро пожаловать, {userProfile.name || 'Нет имени'} {userProfile.surname || 'Нет фамилии'}</h1>

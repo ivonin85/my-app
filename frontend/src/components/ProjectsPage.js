@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProjectService from '../services/ProjectService';
+import Navbar from '../pages/Navbar';
 
 const ProjectsPage = () => {
     const [projects, setProjects] = useState([]);
@@ -24,7 +25,7 @@ const ProjectsPage = () => {
     };
 
     return (
-        <div>
+        <div><div><Navbar /></div>
             <h1>Мои проекты</h1>
             <Link to="/projects/new">Создать новый проект</Link>
             <ul>
