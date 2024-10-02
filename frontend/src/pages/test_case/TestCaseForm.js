@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { Form, Input, Select, Button, Typography, Row, Col } from 'antd';
-import TestCaseService from '../services/TestCaseService';
-import TagService from '../services/TagService';
-import ProfileService from '../services/ProfileService';
+import { Form, Input, Select, Button, Typography, Row, Col, Card } from 'antd';
+import TestCaseService from '../../services/TestCaseService';
+import TagService from '../../services/TagService';
+import ProfileService from '../../services/ProfileService';
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -103,30 +103,34 @@ const TestCaseForm = () => {
         <div>
             <Title level={2}>{testCaseId ? 'Редактирование тест-кейса' : 'Создание тест-кейса'}</Title>
             <Form onFinish={handleSubmit} layout="vertical">
-                <Form.Item label="Заголовок" required>
-                    <Input
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Введите заголовок"
-                    />
-                </Form.Item>
-                <Form.Item label="Описание" required>
-                    <TextArea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Введите описание"
-                        rows={3}
-                    />
-                </Form.Item>
-                <Form.Item label="Предусловия">
-                    <TextArea
-                        value={preconditions}
-                        onChange={(e) => setPreconditions(e.target.value)}
-                        placeholder="Введите предусловия"
-                        rows={3}
-                    />
-                </Form.Item>
-                <Form.Item label="Шаги">
+                <Card title="Основная информация" bordered={true} style={{ marginBottom: '24px' }}>
+                    <Form.Item label="Заголовок" required>
+                        <Input
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="Введите заголовок"
+                        />
+                    </Form.Item>
+                    <Form.Item label="Описание" required>
+                        <TextArea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Введите описание"
+                            rows={3}
+                        />
+                    </Form.Item>
+                    <Form.Item label="Предусловия">
+                        <TextArea
+                            value={preconditions}
+                            onChange={(e) => setPreconditions(e.target.value)}
+                            placeholder="Введите предусловия"
+                            rows={3}
+                        />
+                    </Form.Item>
+                </Card>
+
+                {/* Секция с шагами */}
+                <Card title="Шаги тест-кейса" bordered={true} style={{ marginBottom: '24px' }}>
                     {steps.map((step, index) => (
                         <div key={index} style={{ marginBottom: '16px' }}>
                             <Row gutter={16}>
@@ -135,7 +139,7 @@ const TestCaseForm = () => {
                                         placeholder="Действие"
                                         value={step.action}
                                         onChange={(e) => handleStepChange(index, 'action', e.target.value)}
-                                        style={{ marginBottom: '8px' }}
+                                        style={{ marginBottom: '8px', width: '100%' }}
                                     />
                                 </Col>
                                 <Col span={12}>
@@ -143,6 +147,7 @@ const TestCaseForm = () => {
                                         placeholder="Ожидаемый результат"
                                         value={step.expectedResult}
                                         onChange={(e) => handleStepChange(index, 'expectedResult', e.target.value)}
+                                        style={{ width: '100%' }}
                                     />
                                 </Col>
                             </Row>
@@ -152,51 +157,55 @@ const TestCaseForm = () => {
                         </div>
                     ))}
                     <Button type="dashed" onClick={addStep}>Добавить шаг</Button>
-                </Form.Item>
-                <Form.Item label="Приоритет">
-                    <Select value={priority} onChange={setPriority}>
-                        <Select.Option value="high">Высокий</Select.Option>
-                        <Select.Option value="medium">Средний</Select.Option>
-                        <Select.Option value="low">Низкий</Select.Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item label="Серьезность">
-                    <Select value={severity} onChange={setSeverity}>
-                        <Select.Option value="critical">Критическая</Select.Option>
-                        <Select.Option value="major">Серьезная</Select.Option>
-                        <Select.Option value="minor">Незначительная</Select.Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item label="Статус">
-                    <Select value={status} onChange={setStatus}>
-                        <Select.Option value="Passed">Пройден</Select.Option>
-                        <Select.Option value="Not Passed">Не пройден</Select.Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item label="Теги">
-                    <Select
-                        mode="multiple"
-                        value={tags}
-                        onChange={setTags}
-                        options={allTags.map(tag => ({ value: tag.id, label: tag.name }))}
-                    />
-                </Form.Item>
-                <Form.Item label="Требования">
-                    <TextArea
-                        value={requirements}
-                        onChange={(e) => setRequirements(e.target.value)}
-                        placeholder="Введите требования"
-                        rows={3}
-                    />
-                </Form.Item>
-                <Form.Item label="Комментарии">
-                    <TextArea
-                        value={comments}
-                        onChange={(e) => setComments(e.target.value)}
-                        placeholder="Введите комментарии"
-                        rows={3}
-                    />
-                </Form.Item>
+                </Card>
+
+                <Card title="Дополнительная информация" bordered={true} style={{ marginBottom: '24px' }}>
+                    <Form.Item label="Приоритет">
+                        <Select value={priority} onChange={setPriority}>
+                            <Select.Option value="high">Высокий</Select.Option>
+                            <Select.Option value="medium">Средний</Select.Option>
+                            <Select.Option value="low">Низкий</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Серьезность">
+                        <Select value={severity} onChange={setSeverity}>
+                            <Select.Option value="critical">Критическая</Select.Option>
+                            <Select.Option value="major">Серьезная</Select.Option>
+                            <Select.Option value="minor">Незначительная</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Статус">
+                        <Select value={status} onChange={setStatus}>
+                            <Select.Option value="Passed">Пройден</Select.Option>
+                            <Select.Option value="Not Passed">Не пройден</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="Теги">
+                        <Select
+                            mode="multiple"
+                            value={tags}
+                            onChange={setTags}
+                            options={allTags.map(tag => ({ value: tag.id, label: tag.name }))}
+                        />
+                    </Form.Item>
+                    <Form.Item label="Требования">
+                        <TextArea
+                            value={requirements}
+                            onChange={(e) => setRequirements(e.target.value)}
+                            placeholder="Введите требования"
+                            rows={3}
+                        />
+                    </Form.Item>
+                    <Form.Item label="Комментарии">
+                        <TextArea
+                            value={comments}
+                            onChange={(e) => setComments(e.target.value)}
+                            placeholder="Введите комментарии"
+                            rows={3}
+                        />
+                    </Form.Item>
+                </Card>
+
                 <Form.Item>
                     <Button type="primary" htmlType="submit">
                         {testCaseId ? 'Обновить тест-кейс' : 'Создать тест-кейс'}

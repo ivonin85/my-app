@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ModuleService from '../services/ModuleService'; // Импортируем сервис
+import ModuleService from '../../services/ModuleService'; // Импортируем сервис
 
 const ModuleForm = () => {
     const { projectId } = useParams(); // Получаем ID проекта из URL

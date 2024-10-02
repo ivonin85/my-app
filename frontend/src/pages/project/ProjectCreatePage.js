@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ProjectService from '../services/ProjectService';
+import ProjectService from '../../services/ProjectService';
 
 const ProjectCreatePage = () => {
     const [title, setTitle] = useState('');

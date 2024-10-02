@@ -1,21 +1,25 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import LoginPage from './components/LoginPage';
-import RegisterPage from './components/RegisterPage';
-import ProfilePage from './components/ProfilePage';
-import VerificationPage from './components/VerificationPage';
-import ProjectsPage from './components/ProjectsPage';
-import ProjectCreatePage from './components/ProjectCreatePage';
-import ProjectDetailsPage from './components/ProjectDetailsPage';
-import ProjectEditPage from './components/ProjectEditPage';
-import ModuleForm from './components/ModuleForm';
-import ModuleEditPage from './components/ModuleEditPage';
-import ModuleDetailsPage from './components/ModuleDetailsPage';
-import TestCaseForm from './components/TestCaseForm';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ProfilePage from './pages/ProfilePage';
+import VerificationPage from './pages/VerificationPage';
+import ProjectsPage from './pages/project/ProjectsPage';
+import ProjectCreatePage from './pages/project/ProjectCreatePage';
+import ProjectDetailsPage from './pages/project/ProjectDetailsPage';
+import ProjectEditPage from './pages/project/ProjectEditPage';
+import ModuleForm from './pages/module/ModuleForm';
+import ModuleEditPage from './pages/module/ModuleEditPage';
+import ModuleDetailsPage from './pages/module/ModuleDetailsPage';
+import TestCaseForm from './pages/test_case/TestCaseForm';
+
+import AppLayout from './components/Layout';
+
 
 function App() {
     return (
         <Routes>
+            <Route path="/" element={<AppLayout />}></Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile" element={<ProfilePage />} />

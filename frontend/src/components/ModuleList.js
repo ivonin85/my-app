@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ModuleService from '../services/ModuleService';
+import {Button} from 'antd';
 
 const ModuleList = ({ modules, projectId, refreshModules }) => {
     const navigate = useNavigate();
@@ -31,8 +32,8 @@ const ModuleList = ({ modules, projectId, refreshModules }) => {
                             {module.name}
                         </Link> 
                         (ID: {module.id}) 
-                        <button onClick={() => handleEdit(module.id)}>Редактировать</button>
-                        <button onClick={() => handleDelete(module.id)}>Удалить</button>
+                        <Button type="dashed" onClick={() => handleEdit(module.id)}>Редактировать</Button>
+                        <Button type="dashed"  onClick={() => handleDelete(module.id)}>Удалить</Button>
                     </li>
                 ))}
             </ul>

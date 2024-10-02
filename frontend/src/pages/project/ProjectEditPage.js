@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ProjectService from '../services/ProjectService';
+import ProjectService from '../../services/ProjectService';
 
 const ProjectEditPage = () => {
     const { id } = useParams();

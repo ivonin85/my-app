@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Table, Button, Typography } from 'antd';
 import TestCaseService from '../services/TestCaseService';
+
+const { Title } = Typography;
 
 const TestCaseList = () => {
     const { moduleId, projectId } = useParams();  // Получаем ID модуля и проекта из URL
@@ -16,42 +19,59 @@ const TestCaseList = () => {
         return <p>Тест-кейсов нет</p>;
     }
 
+    const columns = [
+        {
+            title: 'Заголовок',
+            dataIndex: 'title',
+            key: 'title',
+        },
+        {
+            title: 'Приоритет',
+            dataIndex: 'priority',
+            key: 'priority',
+        },
+        {
+            title: 'Статус',
+            dataIndex: 'status',
+            key: 'status',
+        },
+        {
+            title: 'Дата создания',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: (text) => new Date(text).toLocaleDateString(),
+        },
+        {
+            title: 'ID последнего редактора',
+            dataIndex: 'executor',
+            key: 'executor',
+            render: (executor) => (executor ? executor.id : 'Не назначен'),
+        },
+        {
+            title: 'Действия',
+            key: 'action',
+            render: (text, record) => (
+                <Link to={`/testcases/${record.id}`} state={{ projectId, moduleId }}>
+                    Просмотр
+                </Link>
+            ),
+        },
+    ];
+
     return (
         <div>
-            <h2>Список тест-кейсов</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Заголовок</th>
-                        <th>Приоритет</th>
-                        <th>Статус</th>
-                        <th>Дата создания</th>
-                        <th>ID последнего редактора</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {testCases.map(testCase => (
-                        <tr key={testCase.id}>
-                            <td>{testCase.title}</td>
-                            <td>{testCase.priority}</td>
-                            <td>{testCase.status}</td>
-                            <td>{new Date(testCase.createdAt).toLocaleDateString()}</td>
-                            <td>{testCase.executor ? testCase.executor.id : 'Не назначен'}</td>
-                            <td>
-                                {/* Обновили путь */}
-                                <Link to={`/testcases/${testCase.id}`} state={{ projectId, moduleId }}>
-                                    Просмотр
-                                </Link>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            {/* Ссылка на создание нового тест-кейса */}
+            <Title level={2}>Список тест-кейсов</Title>
+            <Table
+                dataSource={testCases}
+                columns={columns}
+                rowKey="id"
+                pagination={false}
+                bordered={false} // Убираем границы между строками
+                style={{ borderCollapse: 'collapse' }} // Убираем границы между столбцами
+                rowClassName="test-case-row" // Класс для строк (можно использовать для дальнейшей стилизации)
+            />
             <Link to="/testcases/create" state={{ projectId, moduleId }}>
-                <button>Создать новый тест-кейс</button>
+                <Button type="primary" style={{ marginTop: '16px' }}>Создать новый тест-кейс</Button>
             </Link>
         </div>
     );

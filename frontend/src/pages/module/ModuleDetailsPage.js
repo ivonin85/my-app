@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import TestCaseList from './TestCaseList';
-import ModuleService from '../services/ModuleService';
-import Navbar from '../pages/Navbar';
+import TestCaseList from '../../components/TestCaseList';
+import ModuleService from '../../services/ModuleService';
+import Navbar from '../../components/Navbar';
 
 const ModuleDetailsPage = () => {
     const { moduleId, projectId } = useParams();
