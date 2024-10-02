@@ -3,10 +3,14 @@ import { useParams, Link } from 'react-router-dom';
 import TestCaseList from '../../components/TestCaseList';
 import ModuleService from '../../services/ModuleService';
 import Navbar from '../../components/Navbar';
+import {Button} from 'antd';
+import { ModuleActions } from '../../hooks/ModuleActions';
 
 const ModuleDetailsPage = () => {
     const { moduleId, projectId } = useParams();
     const [module, setModule] = useState(null);
+
+    const { moduleEdit, moduleDelete } = ModuleActions(projectId);
 
     useEffect(() => {
         ModuleService.getModuleById(moduleId)
@@ -20,6 +24,10 @@ const ModuleDetailsPage = () => {
 
     return (
         <div><div><Navbar /></div>
+        <div>
+            <Button type="dashed" onClick={() => moduleEdit(module.id)}>Редактировать</Button>
+            <Button type="dashed" onClick={() => moduleDelete(module.id)}>Удалить</Button>
+        </div>
             <h1>{module.name}</h1>
             <p>ID: {module.id}</p>
             <p>Описание: {module.description || "Нет описания"}</p>

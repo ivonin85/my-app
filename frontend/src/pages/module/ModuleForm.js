@@ -26,8 +26,6 @@ const ModuleForm = () => {
                 setName('');
                 setParentId(null);
                 alert('Модуль создан успешно!');
-                
-                // Перенаправляем на страницу проекта
                 navigate(`/projects/${projectId}`);
             })
             .catch(error => console.error('Ошибка при создании модуля', error));

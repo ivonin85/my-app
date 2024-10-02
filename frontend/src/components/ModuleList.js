@@ -2,24 +2,11 @@ import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ModuleService from '../services/ModuleService';
 import {Button} from 'antd';
+import { ModuleActions } from '../hooks/ModuleActions';
 
 const ModuleList = ({ modules, projectId, refreshModules }) => {
     const navigate = useNavigate();
-
-    const handleEdit = (moduleId) => {
-        navigate(`/projects/${projectId}/modules/${moduleId}/edit`);
-    };
-
-    const handleDelete = (moduleId) => {
-        if (window.confirm("Вы уверены, что хотите удалить этот модуль?")) {
-            ModuleService.deleteModule(moduleId)
-                .then(() => {
-                    alert("Модуль удален!");
-                    refreshModules(); // Обновляем список модулей после удаления
-                })
-                .catch(error => console.error('Ошибка при удалении модуля', error));
-        }
-    };
+    const { moduleEdit, moduleDelete } = ModuleActions(projectId, refreshModules);
 
     return (
         <div>
@@ -32,8 +19,8 @@ const ModuleList = ({ modules, projectId, refreshModules }) => {
                             {module.name}
                         </Link> 
                         (ID: {module.id}) 
-                        <Button type="dashed" onClick={() => handleEdit(module.id)}>Редактировать</Button>
-                        <Button type="dashed"  onClick={() => handleDelete(module.id)}>Удалить</Button>
+                        <Button type="dashed" onClick={() => moduleEdit(module.id)}>Редактировать</Button>
+                        <Button type="dashed"  onClick={() => moduleDelete(module.id)}>Удалить</Button>
                     </li>
                 ))}
             </ul>

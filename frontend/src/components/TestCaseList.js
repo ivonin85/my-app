@@ -6,7 +6,7 @@ import TestCaseService from '../services/TestCaseService';
 const { Title } = Typography;
 
 const TestCaseList = () => {
-    const { moduleId, projectId } = useParams();  // Получаем ID модуля и проекта из URL
+    const { moduleId, projectId } = useParams();
     const [testCases, setTestCases] = useState([]);
 
     useEffect(() => {

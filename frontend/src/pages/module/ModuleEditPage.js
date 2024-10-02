@@ -20,7 +20,11 @@ const ModuleEditPage = () => {
 
         // Получаем все модули для выбора родительского
         ModuleService.getModulesByProjectId(projectId)
-            .then(response => setModules(response.data))
+            .then(response => {
+                // Исключаем текущий модуль из списка родительских
+                const availableModules = response.data.filter(module => module.id !== parseInt(moduleId));
+                setModules(availableModules);
+            })
             .catch(error => console.error('Ошибка при загрузке модулей', error));
     }, [projectId, moduleId]);
 
@@ -36,6 +40,7 @@ const ModuleEditPage = () => {
     };
 
     return (
+        
         <div>
             <h2>Редактирование модуля</h2>
             <form onSubmit={handleSubmit}>

@@ -48,12 +48,7 @@ const ProjectDetailsPage = () => {
         <div>
         <div><Navbar /></div>
             <Layout style={{ marginLeft: 48 }}>
-                <Sider style={{
-            background: 'transparent', // Устанавливаем прозрачный фон или используем '#fff' для белого
-            padding: 0,
-            width: 256,
-            borderRight: '1px solid #f0f0f0', // Добавляем тонкую линию разделителя, если нужно
-        }}>
+                <Sider style={{background: 'transparent', padding: 0, width: 256, borderRight: '1px solid #f0f0f0',}}>
                     <Sidebar projectId={id} />
                 </Sider>
                 <Content style={{ padding: '24px', background: '#fff', minHeight: '100vh' }}>
@@ -63,13 +58,13 @@ const ProjectDetailsPage = () => {
             {/* Кнопка для перехода на страницу редактирования */}
             <Button type="dashed" onClick={handleEditClick}>Редактировать проект</Button>
 
+            {/* Список модулей проекта */}
+            <ModuleList modules={modules} projectId={id} refreshModules={refreshModules} />
+
             {/* Ссылка на страницу создания модуля для данного проекта */}
             <Link to={`/projects/${id}/modules`}>
                 <Button type="dashed">Создать новый модуль</Button>
             </Link>
-
-            {/* Список модулей проекта */}
-            <ModuleList modules={modules} projectId={id} refreshModules={refreshModules} />
       </Content>
         </Layout>
 
