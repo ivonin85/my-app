@@ -9,7 +9,6 @@ import ProjectCreatePage from './pages/project/ProjectCreatePage';
 import ProjectDetailsPage from './pages/project/ProjectDetailsPage';
 import ProjectEditPage from './pages/project/ProjectEditPage';
 import ModuleForm from './pages/module/ModuleForm';
-import ModuleEditPage from './pages/module/ModuleEditPage';
 import ModuleDetailsPage from './pages/module/ModuleDetailsPage';
 import TestCaseForm from './pages/test_case/TestCaseForm';
 
@@ -31,7 +30,7 @@ function App() {
             <Route path="/modules" element={<ModuleForm />} />
             <Route path="/projects/:projectId/modules" element={<ModuleForm />} />
             <Route path="/projects/:projectId/modules/:moduleId" element={<ModuleDetailsPage />} />
-            <Route path="/projects/:projectId/modules/:moduleId/edit" element={<ModuleEditPage />} />
+            <Route path="/projects/:projectId/modules/:moduleId/edit" element={<ModuleForm />} />
             <Route path="/testcases/create" element={<TestCaseForm />} />
             <Route path="/testcases/:testCaseId" element={<TestCaseForm />} />
             <Route path="/projects/:projectId/modules/:moduleId/testcases/:testCaseId/edit" element={<TestCaseForm />} />

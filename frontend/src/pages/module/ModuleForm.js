@@ -1,34 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import ModuleService from '../../services/ModuleService'; // Импортируем сервис
+import { useParams } from 'react-router-dom';
+import ModuleService from '../../services/ModuleService';
 import { ModuleActions } from '../../hooks/ModuleActions';
 
 const ModuleForm = () => {
-    const { projectId } = useParams(); // Получаем ID проекта из URL
-    const navigate = useNavigate(); // Используем для перенаправления
+    const { projectId, moduleId } = useParams(); // Получаем ID проекта и модуля (если редактируем)
     const [name, setName] = useState(''); // Название модуля
     const [parentId, setParentId] = useState(null); // ID родительского модуля
     const [modules, setModules] = useState([]); // Список доступных модулей (для выбора родительского модуля)
+    const [isEditMode, setIsEditMode] = useState(false); // Режим редактирования
 
-    // Получаем доступные модули для выбора родителя
+    const { moduleCreate, moduleUpdate } = ModuleActions(projectId);
+    
     useEffect(() => {
+        // Если moduleId существует, значит мы в режиме редактирования
+        if (moduleId) {
+            setIsEditMode(true);
+            // Загружаем данные модуля для редактирования
+            ModuleService.getModuleById(moduleId)
+                .then(response => {
+                    setName(response.data.name);
+                    setParentId(response.data.parentId);
+                })
+                .catch(error => console.error('Ошибка при загрузке модуля', error));
+        }
+
+        // Получаем все модули для выбора родительского
         ModuleService.getModulesByProjectId(projectId)
-            .then(response => setModules(response.data))
+            .then(response => {
+                // Если мы в режиме редактирования, исключаем текущий модуль из списка родительских
+                const availableModules = moduleId
+                    ? response.data.filter(module => module.id !== parseInt(moduleId))
+                    : response.data;
+                setModules(availableModules);
+            })
             .catch(error => console.error('Ошибка при загрузке модулей', error));
-    }, [projectId]);
+    }, [projectId, moduleId]);
 
-    const { moduleCreate } = ModuleActions(projectId);
-
-    const moduleSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         const moduleData = { name, parentId, projectId };
-        moduleCreate(moduleData);
+
+        if (isEditMode) {
+            // Обновляем модуль
+            moduleUpdate(moduleId, moduleData);
+        } else {
+            // Создаём новый модуль
+            moduleCreate(moduleData);
+        }
     };
     
     return (
         <div>
-            <h2>Создать новый модуль</h2>
-            <form onSubmit={moduleSubmit}>
+            <h2>{isEditMode ? 'Редактирование модуля' : 'Создать новый модуль'}</h2>
+            <form onSubmit={handleSubmit}>
                 <div>
                     <label>Название модуля:</label>
                     <input 
@@ -52,7 +77,7 @@ const ModuleForm = () => {
                         ))}
                     </select>
                 </div>
-                <button type="submit">Создать</button>
+                <button type="submit">{isEditMode ? 'Обновить' : 'Создать'}</button>
             </form>
         </div>
     );
