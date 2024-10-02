@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ModuleService from '../../services/ModuleService'; // Импортируем сервис
+import { ModuleActions } from '../../hooks/ModuleActions';
 
 const ModuleForm = () => {
     const { projectId } = useParams(); // Получаем ID проекта из URL
@@ -16,25 +17,18 @@ const ModuleForm = () => {
             .catch(error => console.error('Ошибка при загрузке модулей', error));
     }, [projectId]);
 
-    const handleSubmit = (e) => {
+    const { moduleCreate } = ModuleActions(projectId);
+
+    const moduleSubmit = (e) => {
         e.preventDefault();
         const moduleData = { name, parentId, projectId };
-        
-        // Отправляем запрос на создание модуля
-        ModuleService.createModule(moduleData)
-            .then(() => {
-                setName('');
-                setParentId(null);
-                alert('Модуль создан успешно!');
-                navigate(`/projects/${projectId}`);
-            })
-            .catch(error => console.error('Ошибка при создании модуля', error));
+        moduleCreate(moduleData);
     };
-
+    
     return (
         <div>
             <h2>Создать новый модуль</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={moduleSubmit}>
                 <div>
                     <label>Название модуля:</label>
                     <input 

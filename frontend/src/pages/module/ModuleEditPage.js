@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ModuleService from '../../services/ModuleService';
+import { ModuleActions } from '../../hooks/ModuleActions';
 
 const ModuleEditPage = () => {
     const { projectId, moduleId } = useParams();
@@ -28,22 +29,19 @@ const ModuleEditPage = () => {
             .catch(error => console.error('Ошибка при загрузке модулей', error));
     }, [projectId, moduleId]);
 
-    const handleSubmit = (e) => {
+    const { moduleUpdate } = ModuleActions(projectId);
+
+    const moduleEdit = (e) => {
         e.preventDefault();
         const moduleData = { name, parentId, projectId };
-        ModuleService.updateModule(moduleId, moduleData)
-            .then(() => {
-                alert('Модуль обновлён успешно!');
-                navigate(`/projects/${projectId}/modules`);
-            })
-            .catch(error => console.error('Ошибка при обновлении модуля', error));
+        moduleUpdate(moduleId, moduleData);
     };
 
     return (
         
         <div>
             <h2>Редактирование модуля</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={moduleEdit}>
                 <div>
                     <label>Название модуля:</label>
                     <input 

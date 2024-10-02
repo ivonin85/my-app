@@ -21,8 +21,34 @@ export const ModuleActions = (projectId, refreshModules) => {
         }
     };
 
+    const moduleCreate = (moduleData) => {
+        ModuleService.createModule(moduleData)
+            .then(() => {
+                alert('Модуль создан успешно!');
+                navigate(`/projects/${projectId}`);
+                if (refreshModules) {
+                    refreshModules();
+                }
+            })
+            .catch(error => console.error('Ошибка при создании модуля', error));
+    };
+
+    const moduleUpdate = (moduleId, moduleData) => {
+        ModuleService.updateModule(moduleId, moduleData)
+            .then(() => {
+                alert('Модуль обновлён успешно!');
+                navigate(`/projects/${projectId}/modules`);
+                if (refreshModules) {
+                    refreshModules();
+                }
+            })
+            .catch(error => console.error('Ошибка при обновлении модуля', error));
+    };
+
     return {
         moduleEdit,
         moduleDelete,
+        moduleCreate,
+        moduleUpdate
     };
 };
