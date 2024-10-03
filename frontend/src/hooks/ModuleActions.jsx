@@ -25,7 +25,6 @@ export const ModuleActions = (projectId, refreshModules) => {
         ModuleService.createModule(moduleData)
             .then(() => {
                 alert('Модуль создан успешно!');
-                navigate(`/projects/${projectId}`);
                 if (refreshModules) {
                     refreshModules();
                 }
@@ -37,7 +36,6 @@ export const ModuleActions = (projectId, refreshModules) => {
         ModuleService.updateModule(moduleId, moduleData)
             .then(() => {
                 alert('Модуль обновлён успешно!');
-                navigate(`/projects/${projectId}/modules`);
                 if (refreshModules) {
                     refreshModules();
                 }

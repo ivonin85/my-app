@@ -5,12 +5,18 @@ import ModuleService from '../../services/ModuleService';
 import Navbar from '../../components/Navbar';
 import {Button} from 'antd';
 import { ModuleActions } from '../../hooks/ModuleActions';
+import ModuleFormModal from '../module/ModuleFormModal';
 
 const ModuleDetailsPage = () => {
     const { moduleId, projectId } = useParams();
     const [module, setModule] = useState(null);
 
-    const { moduleEdit, moduleDelete } = ModuleActions(projectId);
+    const { moduleDelete } = ModuleActions(projectId);
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const openModal = () => setIsModalVisible(true);
+    const closeModal = () => setIsModalVisible(false);
 
     useEffect(() => {
         ModuleService.getModuleById(moduleId)
@@ -25,7 +31,14 @@ const ModuleDetailsPage = () => {
     return (
         <div><div><Navbar /></div>
         <div>
-            <Button type="dashed" onClick={() => moduleEdit(module.id)}>Редактировать</Button>
+        <Button type="primary" onClick={openModal}>Редактировать модуль</Button>
+                        <ModuleFormModal 
+                            visible={isModalVisible} 
+                            onCancel={closeModal} 
+                            onOk={closeModal} 
+                            projectId={projectId} 
+                            moduleId={module.id}
+                        />
             <Button type="dashed" onClick={() => moduleDelete(module.id)}>Удалить</Button>
         </div>
             <h1>{module.name}</h1>

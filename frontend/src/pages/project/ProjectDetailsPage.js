@@ -6,6 +6,7 @@ import ProjectService from '../../services/ProjectService';
 import Navbar from '../../components/Navbar';
 import Sidebar  from '../../components/Sidebar';
 import { Layout, Button} from 'antd';
+import ModuleFormModal from '../module/ModuleFormModal';
 
 
 const ProjectDetailsPage = () => {
@@ -15,14 +16,17 @@ const ProjectDetailsPage = () => {
     const [modules, setModules] = useState([]); // Для хранения списка модулей
     const { Sider, Content } = Layout; 
 
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const openModal = () => setIsModalVisible(true);
+    const closeModal = () => setIsModalVisible(false);
+
     useEffect(() => {
-        // Пример, если у тебя есть ProjectService
         ProjectService.getProjectById(id)
             .then(response => setProject(response.data))
             .catch(error => console.error('Ошибка при загрузке проекта', error));
     }, [id]);
 
-    // Получаем список модулей для данного проекта
+
     useEffect(() => {
         ModuleService.getModulesByProjectId(id)
             .then(response => setModules(response.data))
@@ -61,10 +65,17 @@ const ProjectDetailsPage = () => {
             {/* Список модулей проекта */}
             <ModuleList modules={modules} projectId={id} refreshModules={refreshModules} />
 
+        
             {/* Ссылка на страницу создания модуля для данного проекта */}
-            <Link to={`/projects/${id}/modules`}>
-                <Button type="dashed">Создать новый модуль</Button>
-            </Link>
+            
+            <Button type="primary" onClick={openModal}>Создать модуль</Button>
+            <ModuleFormModal
+                visible={isModalVisible}
+                onCancel={closeModal}
+                onOk={closeModal}
+                projectId={id}
+            />
+            
       </Content>
         </Layout>
 

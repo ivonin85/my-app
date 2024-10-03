@@ -1,12 +1,24 @@
-import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import ModuleService from '../services/ModuleService';
-import {Button} from 'antd';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from 'antd';
 import { ModuleActions } from '../hooks/ModuleActions';
+import ModuleFormModal from './../pages/module/ModuleFormModal';
 
 const ModuleList = ({ modules, projectId, refreshModules }) => {
-    const navigate = useNavigate();
-    const { moduleEdit, moduleDelete } = ModuleActions(projectId, refreshModules);
+    const { moduleDelete } = ModuleActions(projectId, refreshModules);
+    
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [editingModuleId, setEditingModuleId] = useState(null); // Хранение ID редактируемого модуля
+
+    const openModal = (moduleId) => {
+        setEditingModuleId(moduleId);  // Устанавливаем ID редактируемого модуля
+        setIsModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setIsModalVisible(false);
+        setEditingModuleId(null);  // Очищаем ID редактируемого модуля после закрытия
+    };
 
     return (
         <div>
@@ -19,8 +31,18 @@ const ModuleList = ({ modules, projectId, refreshModules }) => {
                             {module.name}
                         </Link> 
                         (ID: {module.id}) 
-                        <Button type="dashed" onClick={() => moduleEdit(module.id)}>Редактировать</Button>
-                        <Button type="dashed"  onClick={() => moduleDelete(module.id)}>Удалить</Button>
+                        <Button type="primary" onClick={() => openModal(module.id)}>Редактировать модуль</Button>
+
+                        {/* Модальное окно открывается только для конкретного модуля */}
+                        <ModuleFormModal 
+                            visible={isModalVisible && editingModuleId === module.id}  // Проверяем ID редактируемого модуля
+                            onCancel={closeModal} 
+                            onOk={closeModal} 
+                            projectId={projectId} 
+                            moduleId={module.id}
+                        />
+
+                        <Button type="dashed" onClick={() => moduleDelete(module.id)}>Удалить</Button>
                     </li>
                 ))}
             </ul>
