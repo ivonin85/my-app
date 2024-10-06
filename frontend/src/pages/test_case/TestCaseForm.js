@@ -103,124 +103,135 @@ const TestCaseForm = () => {
         <div>
             <Title level={2}>{testCaseId ? 'Редактирование тест-кейса' : 'Создание тест-кейса'}</Title>
             <Form onFinish={handleSubmit} layout="vertical">
-                <Card title="Основная информация" bordered={true} style={{ marginBottom: '24px' }}>
-                    <Form.Item label="Заголовок" required>
-                        <Input
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Введите заголовок"
-                        />
-                    </Form.Item>
-                    <Form.Item label="Описание" required>
-                        <TextArea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Введите описание"
-                            rows={3}
-                        />
-                    </Form.Item>
-                    <Form.Item label="Предусловия">
-                        <TextArea
-                            value={preconditions}
-                            onChange={(e) => setPreconditions(e.target.value)}
-                            placeholder="Введите предусловия"
-                            rows={3}
-                        />
-                    </Form.Item>
-                </Card>
+                <Row gutter={24}>
+                    {/* Левая часть */}
+                    <Col span={16}>
+                        <Card title="Основная информация" bordered={true} style={{ marginBottom: '24px' }}>
+                            <Form.Item label="Заголовок" required>
+                                <Input
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    placeholder="Введите заголовок"
+                                />
+                            </Form.Item>
+                            <Form.Item label="Предусловия">
+                                <TextArea
+                                    value={preconditions}
+                                    onChange={(e) => setPreconditions(e.target.value)}
+                                    placeholder="Введите предусловия"
+                                    rows={3}
+                                />
+                            </Form.Item>
+                        </Card>
 
-                {/* Секция с шагами */}
-                <Card 
-                    title="Шаги тест-кейса" 
-                    bordered={true} 
-                    style={{ marginBottom: '24px', backgroundColor: '#f0f2f5', border: '2px dashed #d9d9d9' }}
-                >
-                    {steps.map((step, index) => (
-                        <div key={index} style={{ marginBottom: '16px' }}>
+                        {/* Шаги тест-кейса */}
+                        <Card
+                            title="Шаги тест-кейса"
+                            bordered={true}
+                            style={{ marginBottom: '24px', backgroundColor: '#f0f2f5', border: '2px dashed #d9d9d9' }}
+                        >
+                            {steps.map((step, index) => (
+                                <div key={index} style={{ marginBottom: '16px' }}>
+                                    <Row gutter={16}>
+                                        <Col span={12}>
+                                            <TextArea
+                                                placeholder="Действие"
+                                                value={step.action}
+                                                onChange={(e) => handleStepChange(index, 'action', e.target.value)}
+                                                style={{ marginBottom: '8px', width: '100%' }}
+                                                autoSize={{ minRows: 1, maxRows: 6 }}
+                                            />
+                                        </Col>
+                                        <Col span={12}>
+                                            <TextArea
+                                                placeholder="Ожидаемый результат"
+                                                value={step.expectedResult}
+                                                onChange={(e) => handleStepChange(index, 'expectedResult', e.target.value)}
+                                                style={{ width: '100%' }}
+                                                autoSize={{ minRows: 1, maxRows: 6 }}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Button type="dashed" onClick={() => removeStep(index)} style={{ marginTop: '8px' }}>
+                                        Удалить шаг
+                                    </Button>
+                                </div>
+                            ))}
+                            <Button type="dashed" onClick={addStep}>Добавить шаг</Button>
+                        </Card>
+
+                        <Card title="Теги" bordered={true} style={{ marginBottom: '24px' }}>
+                            <Form.Item label="Теги">
+                                <Select
+                                    mode="multiple"
+                                    value={tags}
+                                    onChange={setTags}
+                                    options={allTags.map(tag => ({ value: tag.id, label: tag.name }))}
+                                />
+                            </Form.Item>
+                        </Card>
+                    </Col>
+
+                    {/* Правая часть */}
+                    <Col span={8}>
+                        <Card title="Дополнительная информация" bordered={true} style={{ marginBottom: '24px' }}>
+                            <Form.Item label="Описание" required>
+                                <TextArea
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    placeholder="Введите описание"
+                                    rows={3}
+                                />
+                            </Form.Item>
                             <Row gutter={16}>
-                                <Col span={12}>
-                                    <TextArea
-                                        placeholder="Действие"
-                                        value={step.action}
-                                        onChange={(e) => handleStepChange(index, 'action', e.target.value)}
-                                        style={{ marginBottom: '8px', width: '100%' }}
-                                        autoSize={{ minRows: 1, maxRows: 6 }}
-                                    />
+                                <Col span={24}>
+                                    <Form.Item label="Приоритет">
+                                        <Select value={priority} onChange={setPriority}>
+                                            <Select.Option value="Высокий">Высокий</Select.Option>
+                                            <Select.Option value="Средний">Средний</Select.Option>
+                                            <Select.Option value="Низкий">Низкий</Select.Option>
+                                        </Select>
+                                    </Form.Item>
                                 </Col>
-                                <Col span={12}>
-                                    <TextArea
-                                        placeholder="Ожидаемый результат"
-                                        value={step.expectedResult}
-                                        onChange={(e) => handleStepChange(index, 'expectedResult', e.target.value)}
-                                        style={{ width: '100%' }}
-                                        autoSize={{ minRows: 1, maxRows: 6 }}
-                                    />
+                                <Col span={24}>
+                                    <Form.Item label="Серьезность">
+                                        <Select value={severity} onChange={setSeverity}>
+                                            <Select.Option value="Критическая">Критическая</Select.Option>
+                                            <Select.Option value="Серьезная">Серьезная</Select.Option>
+                                            <Select.Option value="Незначительная">Незначительная</Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={24}>
+                                    <Form.Item label="Статус">
+                                        <Select value={status} onChange={setStatus}>
+                                            <Select.Option value="Готов">Готов</Select.Option>
+                                            <Select.Option value="Не готов">Не готов</Select.Option>
+                                            <Select.Option value="На редактировании">На редактировании</Select.Option>
+                                            <Select.Option value="Необходимо актуализировать">Необходимо актуализировать</Select.Option>
+                                        </Select>
+                                    </Form.Item>
                                 </Col>
                             </Row>
-                            <Button type="dashed" onClick={() => removeStep(index)} style={{ marginTop: '8px' }}>
-                                Удалить шаг
-                            </Button>
-                        </div>
-                    ))}
-                    <Button type="dashed" onClick={addStep}>Добавить шаг</Button>
-                </Card>
-
-                <Card title="Дополнительная информация" bordered={true} style={{ marginBottom: '24px' }}>
-                    <Row gutter={16}>
-                        <Col span={8}>
-                            <Form.Item label="Приоритет">
-                                <Select value={priority} onChange={setPriority}>
-                                    <Select.Option value="high">Высокий</Select.Option>
-                                    <Select.Option value="medium">Средний</Select.Option>
-                                    <Select.Option value="low">Низкий</Select.Option>
-                                </Select>
+                            <Form.Item label="Требования">
+                                <TextArea
+                                    value={requirements}
+                                    onChange={(e) => setRequirements(e.target.value)}
+                                    placeholder="Введите требования"
+                                    rows={3}
+                                />
                             </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item label="Серьезность">
-                                <Select value={severity} onChange={setSeverity}>
-                                    <Select.Option value="critical">Критическая</Select.Option>
-                                    <Select.Option value="major">Серьезная</Select.Option>
-                                    <Select.Option value="minor">Незначительная</Select.Option>
-                                </Select>
+                            <Form.Item label="Комментарии">
+                                <TextArea
+                                    value={comments}
+                                    onChange={(e) => setComments(e.target.value)}
+                                    placeholder="Введите комментарии"
+                                    rows={3}
+                                />
                             </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item label="Статус">
-                                <Select value={status} onChange={setStatus}>
-                                    <Select.Option value="Ready">Готов</Select.Option>
-                                    <Select.Option value="Not Ready">Не готов</Select.Option>
-                                    <Select.Option value="In Review">На редактировании</Select.Option>
-                                    <Select.Option value="Needs Update">Необходимо актуализировать</Select.Option>
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Form.Item label="Теги">
-                        <Select
-                            mode="multiple"
-                            value={tags}
-                            onChange={setTags}
-                            options={allTags.map(tag => ({ value: tag.id, label: tag.name }))}
-                        />
-                    </Form.Item>
-                    <Form.Item label="Требования">
-                        <TextArea
-                            value={requirements}
-                            onChange={(e) => setRequirements(e.target.value)}
-                            placeholder="Введите требования"
-                            rows={3}
-                        />
-                    </Form.Item>
-                    <Form.Item label="Комментарии">
-                        <TextArea
-                            value={comments}
-                            onChange={(e) => setComments(e.target.value)}
-                            placeholder="Введите комментарии"
-                            rows={3}
-                        />
-                    </Form.Item>
-                </Card>
+                        </Card>
+                    </Col>
+                </Row>
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit">
