@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Table, Button, Typography } from 'antd';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Table, Typography } from 'antd';
 import TestCaseService from '../services/TestCaseService';
 
 const { Title } = Typography;
@@ -8,6 +8,7 @@ const { Title } = Typography;
 const TestCaseList = () => {
     const { moduleId, projectId } = useParams();
     const [testCases, setTestCases] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         TestCaseService.getTestCasesByModuleId(moduleId)
@@ -21,7 +22,12 @@ const TestCaseList = () => {
 
     const columns = [
         {
-            title: 'Заголовок',
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Название тест-кейса',
             dataIndex: 'title',
             key: 'title',
         },
@@ -31,30 +37,22 @@ const TestCaseList = () => {
             key: 'priority',
         },
         {
-            title: 'Статус',
-            dataIndex: 'status',
-            key: 'status',
-        },
-        {
             title: 'Дата создания',
             dataIndex: 'createdAt',
             key: 'createdAt',
             render: (text) => new Date(text).toLocaleDateString(),
         },
         {
-            title: 'ID последнего редактора',
-            dataIndex: 'executor',
-            key: 'executor',
-            render: (executor) => (executor ? executor.id : 'Не назначен'),
+            title: 'Теги тест-кейса',
+            dataIndex: 'tags',
+            key: 'tags',
+            render: (tags) => tags ? tags.join(', ') : 'Нет тегов',
         },
         {
-            title: 'Действия',
-            key: 'action',
-            render: (text, record) => (
-                <Link to={`/testcases/${record.id}`} state={{ projectId, moduleId }}>
-                    Просмотр
-                </Link>
-            ),
+            title: 'Дата последнего редактирования',
+            dataIndex: 'updatedAt',
+            key: 'updatedAt',
+            render: (text) => new Date(text).toLocaleDateString(),
         },
     ];
 
@@ -66,13 +64,15 @@ const TestCaseList = () => {
                 columns={columns}
                 rowKey="id"
                 pagination={false}
-                bordered={false} // Убираем границы между строками
-                style={{ borderCollapse: 'collapse' }} // Убираем границы между столбцами
-                rowClassName="test-case-row" // Класс для строк (можно использовать для дальнейшей стилизации)
+                bordered={false}
+                style={{ borderCollapse: 'collapse' }}
+                rowClassName="test-case-row"
+                onRow={(record) => ({
+                    onClick: () => {
+                        navigate(`/testcases/${record.id}`, { state: { projectId, moduleId } });
+                    },
+                })}
             />
-            <Link to="/testcases/create" state={{ projectId, moduleId }}>
-                <Button type="primary" style={{ marginTop: '16px' }}>Создать новый тест-кейс</Button>
-            </Link>
         </div>
     );
 };

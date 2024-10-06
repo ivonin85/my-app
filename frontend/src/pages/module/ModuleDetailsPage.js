@@ -48,6 +48,9 @@ const ModuleDetailsPage = () => {
 
             {/* Список тест-кейсов для этого модуля */}
             <TestCaseList />
+            <Link to="/testcases/create" state={{ projectId, moduleId }}>
+                <Button type="primary" style={{ marginTop: '16px' }}>Создать новый тест-кейс</Button>
+            </Link>
         </div>
     );
 };

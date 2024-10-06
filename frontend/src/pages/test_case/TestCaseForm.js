@@ -16,9 +16,9 @@ const TestCaseForm = () => {
     const [description, setDescription] = useState('');
     const [preconditions, setPreconditions] = useState('');
     const [steps, setSteps] = useState([{ action: '', expectedResult: '' }]);
-    const [priority, setPriority] = useState('medium');
-    const [severity, setSeverity] = useState('minor');
-    const [status, setStatus] = useState('Not Passed');
+    const [priority, setPriority] = useState('Низкий');
+    const [severity, setSeverity] = useState('Незначительная');
+    const [status, setStatus] = useState('Не готов');
     const [requirements, setRequirements] = useState('');
     const [comments, setComments] = useState('');
     const [tags, setTags] = useState([]);
@@ -130,24 +130,30 @@ const TestCaseForm = () => {
                 </Card>
 
                 {/* Секция с шагами */}
-                <Card title="Шаги тест-кейса" bordered={true} style={{ marginBottom: '24px' }}>
+                <Card 
+                    title="Шаги тест-кейса" 
+                    bordered={true} 
+                    style={{ marginBottom: '24px', backgroundColor: '#f0f2f5', border: '2px dashed #d9d9d9' }}
+                >
                     {steps.map((step, index) => (
                         <div key={index} style={{ marginBottom: '16px' }}>
                             <Row gutter={16}>
                                 <Col span={12}>
-                                    <Input
+                                    <TextArea
                                         placeholder="Действие"
                                         value={step.action}
                                         onChange={(e) => handleStepChange(index, 'action', e.target.value)}
                                         style={{ marginBottom: '8px', width: '100%' }}
+                                        autoSize={{ minRows: 1, maxRows: 6 }}
                                     />
                                 </Col>
                                 <Col span={12}>
-                                    <Input
+                                    <TextArea
                                         placeholder="Ожидаемый результат"
                                         value={step.expectedResult}
                                         onChange={(e) => handleStepChange(index, 'expectedResult', e.target.value)}
                                         style={{ width: '100%' }}
+                                        autoSize={{ minRows: 1, maxRows: 6 }}
                                     />
                                 </Col>
                             </Row>
@@ -160,26 +166,36 @@ const TestCaseForm = () => {
                 </Card>
 
                 <Card title="Дополнительная информация" bordered={true} style={{ marginBottom: '24px' }}>
-                    <Form.Item label="Приоритет">
-                        <Select value={priority} onChange={setPriority}>
-                            <Select.Option value="high">Высокий</Select.Option>
-                            <Select.Option value="medium">Средний</Select.Option>
-                            <Select.Option value="low">Низкий</Select.Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item label="Серьезность">
-                        <Select value={severity} onChange={setSeverity}>
-                            <Select.Option value="critical">Критическая</Select.Option>
-                            <Select.Option value="major">Серьезная</Select.Option>
-                            <Select.Option value="minor">Незначительная</Select.Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item label="Статус">
-                        <Select value={status} onChange={setStatus}>
-                            <Select.Option value="Passed">Пройден</Select.Option>
-                            <Select.Option value="Not Passed">Не пройден</Select.Option>
-                        </Select>
-                    </Form.Item>
+                    <Row gutter={16}>
+                        <Col span={8}>
+                            <Form.Item label="Приоритет">
+                                <Select value={priority} onChange={setPriority}>
+                                    <Select.Option value="high">Высокий</Select.Option>
+                                    <Select.Option value="medium">Средний</Select.Option>
+                                    <Select.Option value="low">Низкий</Select.Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label="Серьезность">
+                                <Select value={severity} onChange={setSeverity}>
+                                    <Select.Option value="critical">Критическая</Select.Option>
+                                    <Select.Option value="major">Серьезная</Select.Option>
+                                    <Select.Option value="minor">Незначительная</Select.Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label="Статус">
+                                <Select value={status} onChange={setStatus}>
+                                    <Select.Option value="Ready">Готов</Select.Option>
+                                    <Select.Option value="Not Ready">Не готов</Select.Option>
+                                    <Select.Option value="In Review">На редактировании</Select.Option>
+                                    <Select.Option value="Needs Update">Необходимо актуализировать</Select.Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     <Form.Item label="Теги">
                         <Select
                             mode="multiple"
