@@ -20,6 +20,12 @@ const TestCaseList = () => {
         return <p>Тест-кейсов нет</p>;
     }
 
+    const priorityColors = {
+        'Высокий': 'red',
+        'Средний': 'orange',
+        'Низкий': 'green',
+    };
+
     const columns = [
         {
             title: 'ID',
@@ -35,6 +41,16 @@ const TestCaseList = () => {
             title: 'Приоритет',
             dataIndex: 'priority',
             key: 'priority',
+            render: (text) => (
+                <span style={{
+                    backgroundColor: priorityColors[text] || 'transparent',
+                    padding: '2px 5px',
+                    borderRadius: '5px',
+                    color: 'white',
+                }}>
+                    {text}
+                </span>
+            ),
         },
         {
             title: 'Дата создания',
@@ -49,10 +65,16 @@ const TestCaseList = () => {
             render: (tags) => tags ? tags.join(', ') : 'Нет тегов',
         },
         {
-            title: 'Дата редактирования',
+            title: 'Дата изменения',
             dataIndex: 'updatedAt',
             key: 'updatedAt',
             render: (text) => new Date(text).toLocaleDateString(),
+        },
+        ,
+        {
+            title: 'Статус',
+            dataIndex: 'status',
+            key: 'status',
         },
     ];
 
