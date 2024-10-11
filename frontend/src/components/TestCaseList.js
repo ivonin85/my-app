@@ -49,7 +49,7 @@ const TestCaseList = () => {
             render: (tags) => tags ? tags.join(', ') : 'Нет тегов',
         },
         {
-            title: 'Дата последнего редактирования',
+            title: 'Дата редактирования',
             dataIndex: 'updatedAt',
             key: 'updatedAt',
             render: (text) => new Date(text).toLocaleDateString(),

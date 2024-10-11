@@ -69,7 +69,6 @@ public class TestCaseService {
         testCase.setDescription(dto.getDescription());
         testCase.setPreconditions(dto.getPreconditions());
 
-        // Преобразование шагов тест-кейса (TestStepDTO -> TestStep)
         List<TestStep> steps = dto.getSteps().stream()
                 .map(stepDTO -> {
                     TestStep step = new TestStep();

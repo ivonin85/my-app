@@ -12,6 +12,7 @@
     "react-scripts": "^5.0.0",
     "antd": "^5.8.6",
     "@ant-design/icons": "^5.0.1"
+   
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.18.6"
