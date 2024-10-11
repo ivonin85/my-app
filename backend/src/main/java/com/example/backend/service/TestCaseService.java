@@ -4,6 +4,7 @@ import com.example.backend.dto.TestCaseDTO;
 import com.example.backend.dto.TestStepDTO;
 import com.example.backend.model.Module;
 import com.example.backend.model.*;
+import com.example.backend.repository.TagRepository;
 import com.example.backend.repository.TestCaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class TestCaseService {
 
     @Autowired
     private TestCaseRepository testCaseRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     public TestCaseDTO createTestCase(TestCaseDTO testCaseDTO) {
         TestCase testCase = mapToEntity(testCaseDTO);
@@ -81,13 +85,15 @@ public class TestCaseService {
         testCase.setRequirements(dto.getRequirements());
         testCase.setComments(dto.getComments());
 
-        // Преобразование тегов (List<String> -> List<Tag>)
+        // Преобразование тегов (List<String> -> List<Tag>), проверка и сохранение новых тегов
         List<Tag> tags = dto.getTags().stream()
-                .map(tagName -> {
-                    Tag tag = new Tag();
-                    tag.setName(tagName);
-                    return tag;
-                }).collect(Collectors.toList());
+                .map(tagName -> tagRepository.findByName(tagName)
+                        .orElseGet(() -> {
+                            Tag newTag = new Tag();
+                            newTag.setName(tagName);
+                            return tagRepository.save(newTag); // Сохраняем тег перед присвоением
+                        }))
+                .collect(Collectors.toList());
         testCase.setTags(tags);
 
         // Преобразование внешних ключей
@@ -108,6 +114,7 @@ public class TestCaseService {
 
         return testCase;
     }
+
 
 
     private TestCaseDTO mapToDTO(TestCase entity) {

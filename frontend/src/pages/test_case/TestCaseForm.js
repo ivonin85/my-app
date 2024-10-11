@@ -22,9 +22,13 @@ const TestCaseForm = () => {
     const [requirements, setRequirements] = useState('');
     const [comments, setComments] = useState('');
     const [tags, setTags] = useState([]);
+    const [tagIds, setTagIds] = useState([]); // Для хранения идентификаторов тегов
+    const [tagNames, setTagNames] = useState([]);
     const [allTags, setAllTags] = useState([]);
     const [executorId, setExecutorId] = useState(null);
     const [moduleId, setModuleId] = useState(initialModuleId);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [newTagName, setNewTagName] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -49,7 +53,18 @@ const TestCaseForm = () => {
                     setStatus(testCase.status);
                     setRequirements(testCase.requirements);
                     setComments(testCase.comments);
-                    setTags(testCase.tags.map(tag => tag.id));
+                    
+                    TagService.getTagsByTestCaseId(testCaseId)
+                        .then(response => {
+                            const tags = response.data;
+                            setTagIds(tags.map(tag => tag.id));
+                            setTagNames(tags.map(tag => tag.name));
+                        })
+                        .catch(error => {
+                            console.error('Ошибка при загрузке тегов тест-кейса', error);
+                            setTagIds([]);
+                            setTagNames([]);
+                        });
                     setExecutorId(testCase.executor?.id || null);
                     setModuleId(testCase.moduleId);
                 })
@@ -82,7 +97,7 @@ const TestCaseForm = () => {
             status,
             requirements,
             comments,
-            tags,
+            tags: tagNames,
             executorId,
             moduleId
         };
@@ -97,6 +112,18 @@ const TestCaseForm = () => {
                 navigate(`/projects/${projectId}/modules/${moduleId}`, { state: { projectId, moduleId } });
             })
             .catch(error => console.error(`Ошибка при ${testCaseId ? 'обновлении' : 'создании'} тест-кейса`, error));
+    };
+
+    const handleCreateTag = () => {
+        const newTag = { name: newTagName };
+        TagService.createTag(newTag)
+            .then(response => {
+                setAllTags([...allTags, response.data]);
+                setTags([...tags, response.data.id]);
+                setIsModalVisible(false);
+                setNewTagName('');
+            })
+            .catch(error => console.error('Ошибка при создании тега', error));
     };
 
     return (
@@ -159,17 +186,6 @@ const TestCaseForm = () => {
                             ))}
                             <Button type="dashed" onClick={addStep}>Добавить шаг</Button>
                         </Card>
-
-                        <Card title="Теги" bordered={true} style={{ marginBottom: '24px' }}>
-                            <Form.Item label="Теги">
-                                <Select
-                                    mode="multiple"
-                                    value={tags}
-                                    onChange={setTags}
-                                    options={allTags.map(tag => ({ value: tag.id, label: tag.name }))}
-                                />
-                            </Form.Item>
-                        </Card>
                     </Col>
 
                     {/* Правая часть */}
@@ -218,26 +234,30 @@ const TestCaseForm = () => {
                                     value={requirements}
                                     onChange={(e) => setRequirements(e.target.value)}
                                     placeholder="Введите требования"
-                                    rows={3}
                                 />
                             </Form.Item>
-                            <Form.Item label="Комментарии">
-                                <TextArea
-                                    value={comments}
-                                    onChange={(e) => setComments(e.target.value)}
-                                    placeholder="Введите комментарии"
-                                    rows={3}
-                                />
+
+                            <Form.Item label="Теги">
+                            <Select
+                                mode="tags"
+                                value={tagNames} // Используем названия тегов
+                                onChange={(value) => {
+                                    setTagNames(value);
+                                    const selectedTags = allTags.filter(tag => value.includes(tag.name));
+                                    setTagIds(selectedTags.map(tag => tag.id));
+                                }}
+                                tokenSeparators={[',']}
+                                options={allTags.map(tag => ({ value: tag.name, label: tag.name }))}
+                                placeholder="Введите теги или выберите из списка"
+                            />
                             </Form.Item>
                         </Card>
                     </Col>
                 </Row>
 
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        {testCaseId ? 'Обновить тест-кейс' : 'Создать тест-кейс'}
-                    </Button>
-                </Form.Item>
+                <Button type="primary" htmlType="submit">
+                    {testCaseId ? 'Сохранить изменения' : 'Создать тест-кейс'}
+                </Button>
             </Form>
         </div>
     );
