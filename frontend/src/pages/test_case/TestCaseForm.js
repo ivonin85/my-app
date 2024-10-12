@@ -37,7 +37,7 @@ const TestCaseForm = () => {
             .catch(error => console.error('Ошибка при загрузке тегов', error));
 
         ProfileService.getUserProfile()
-            .then(response => setExecutorId(response.data.id))
+            .then(response => setExecutorId(response.data.userId))
             .catch(error => console.error('Ошибка при загрузке профиля', error));
 
         if (testCaseId) {
