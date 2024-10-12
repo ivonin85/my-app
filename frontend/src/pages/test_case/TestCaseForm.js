@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Form, Input, Select, Button, Typography, Row, Col, Card } from 'antd';
 import TestCaseService from '../../services/TestCaseService';
 import TagService from '../../services/TagService';
 import ProfileService from '../../services/ProfileService';
 import TestCaseSteps from '../../components/test_case/TestCaseSteps';
+import TagSelect from '../../components/test_case/TagSelect';
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -28,8 +29,6 @@ const TestCaseForm = () => {
     const [allTags, setAllTags] = useState([]);
     const [executorId, setExecutorId] = useState(null);
     const [moduleId, setModuleId] = useState(initialModuleId);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [newTagName, setNewTagName] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -73,6 +72,12 @@ const TestCaseForm = () => {
         }
     }, [testCaseId]);
 
+    const handleTagChange = (selectedTags) => {
+        setTagNames(selectedTags);
+        const selectedTagObjects = allTags.filter(tag => selectedTags.includes(tag.name));
+        setTagIds(selectedTagObjects.map(tag => tag.id));
+    };
+
     const handleStepChange = (index, field, value) => {
         const newSteps = [...steps];
         newSteps[index][field] = value;
@@ -113,18 +118,6 @@ const TestCaseForm = () => {
                 navigate(`/projects/${projectId}/modules/${moduleId}`, { state: { projectId, moduleId } });
             })
             .catch(error => console.error(`Ошибка при ${testCaseId ? 'обновлении' : 'создании'} тест-кейса`, error));
-    };
-
-    const handleCreateTag = () => {
-        const newTag = { name: newTagName };
-        TagService.createTag(newTag)
-            .then(response => {
-                setAllTags([...allTags, response.data]);
-                setTags([...tags, response.data.id]);
-                setIsModalVisible(false);
-                setNewTagName('');
-            })
-            .catch(error => console.error('Ошибка при создании тега', error));
     };
 
     return (
@@ -210,20 +203,12 @@ const TestCaseForm = () => {
                                 />
                             </Form.Item>
 
-                            <Form.Item label="Теги">
-                            <Select
-                                mode="tags"
-                                value={tagNames} // Используем названия тегов
-                                onChange={(value) => {
-                                    setTagNames(value);
-                                    const selectedTags = allTags.filter(tag => value.includes(tag.name));
-                                    setTagIds(selectedTags.map(tag => tag.id));
-                                }}
-                                tokenSeparators={[',']}
-                                options={allTags.map(tag => ({ value: tag.name, label: tag.name }))}
-                                placeholder="Введите теги или выберите из списка"
+                            {/* Теги тест-кейса */}
+                            <TagSelect
+                                value={tagNames}
+                                onChange={handleTagChange}
+                                allTags={allTags}
                             />
-                            </Form.Item>
                         </Card>
                     </Col>
                 </Row>
