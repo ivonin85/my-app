@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Form, Input, Select, Button, Typography, Row, Col, Card } from 'antd';
 import TestCaseService from '../../services/TestCaseService';
 import TagService from '../../services/TagService';
 import ProfileService from '../../services/ProfileService';
+import TestCaseSteps from '../../components/test_case/TestCaseSteps';
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -22,7 +23,7 @@ const TestCaseForm = () => {
     const [requirements, setRequirements] = useState('');
     const [comments, setComments] = useState('');
     const [tags, setTags] = useState([]);
-    const [tagIds, setTagIds] = useState([]); // Для хранения идентификаторов тегов
+    const [tagIds, setTagIds] = useState([]);
     const [tagNames, setTagNames] = useState([]);
     const [allTags, setAllTags] = useState([]);
     const [executorId, setExecutorId] = useState(null);
@@ -152,40 +153,12 @@ const TestCaseForm = () => {
                         </Card>
 
                         {/* Шаги тест-кейса */}
-                        <Card
-                            title="Шаги тест-кейса"
-                            bordered={true}
-                            style={{ marginBottom: '24px', backgroundColor: '#f0f2f5', border: '2px dashed #d9d9d9' }}
-                        >
-                            {steps.map((step, index) => (
-                                <div key={index} style={{ marginBottom: '16px' }}>
-                                    <Row gutter={16}>
-                                        <Col span={12}>
-                                            <TextArea
-                                                placeholder="Действие"
-                                                value={step.action}
-                                                onChange={(e) => handleStepChange(index, 'action', e.target.value)}
-                                                style={{ marginBottom: '8px', width: '100%' }}
-                                                autoSize={{ minRows: 1, maxRows: 6 }}
-                                            />
-                                        </Col>
-                                        <Col span={12}>
-                                            <TextArea
-                                                placeholder="Ожидаемый результат"
-                                                value={step.expectedResult}
-                                                onChange={(e) => handleStepChange(index, 'expectedResult', e.target.value)}
-                                                style={{ width: '100%' }}
-                                                autoSize={{ minRows: 1, maxRows: 6 }}
-                                            />
-                                        </Col>
-                                    </Row>
-                                    <Button type="dashed" onClick={() => removeStep(index)} style={{ marginTop: '8px' }}>
-                                        Удалить шаг
-                                    </Button>
-                                </div>
-                            ))}
-                            <Button type="dashed" onClick={addStep}>Добавить шаг</Button>
-                        </Card>
+                        <TestCaseSteps
+                            steps={steps}
+                            onStepChange={handleStepChange}
+                            onAddStep={addStep}
+                            onRemoveStep={removeStep}
+                        />
                     </Col>
 
                     {/* Правая часть */}

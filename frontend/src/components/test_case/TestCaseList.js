@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Table, Typography } from 'antd';
-import TestCaseService from '../services/TestCaseService';
+import TestCaseService from '../../services/TestCaseService';
 
 const { Title } = Typography;
 

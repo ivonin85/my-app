@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import TestCaseList from '../../components/TestCaseList';
+import TestCaseList from '../../components/test_case/TestCaseList';
 import ModuleService from '../../services/ModuleService';
 import Navbar from '../../components/Navbar';
 import {Button} from 'antd';
