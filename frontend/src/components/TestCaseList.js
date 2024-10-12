@@ -33,7 +33,7 @@ const TestCaseList = () => {
             key: 'id',
         },
         {
-            title: 'Название тест-кейса',
+            title: 'Название',
             dataIndex: 'title',
             key: 'title',
         },
@@ -59,7 +59,7 @@ const TestCaseList = () => {
             render: (text) => new Date(text).toLocaleDateString(),
         },
         {
-            title: 'Теги тест-кейса',
+            title: 'Теги',
             dataIndex: 'tags',
             key: 'tags',
             render: (tags) => tags ? tags.join(', ') : 'Нет тегов',
