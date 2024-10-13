@@ -36,8 +36,6 @@ const ModuleDetailsPage = () => {
                 </Sider>
                 <Content style={{ padding: '24px', background: '#fff', minHeight: '100vh' }}>
                     <h1>{module.name}</h1>
-                    <p>ID: {module.id}</p>
-                    <p>Описание: {module.description || "Нет описания"}</p>
                     {module.parentId && <p>Родительский модуль ID: {module.parentId}</p>}
 
                     <Button type="primary" onClick={openModal} style={{ marginRight: '8px' }}>
@@ -55,14 +53,16 @@ const ModuleDetailsPage = () => {
                         moduleId={module.id}
                     />
 
-                    {/* Список тест-кейсов для этого модуля */}
-                    <TestCaseList />
-
                     <Link to="/testcases/create" state={{ projectId, moduleId }}>
-                        <Button type="primary" style={{ marginTop: '16px' }}>
+                        <Button type="primary" style={{ marginTop: '16px', marginLeft: '8px' }}>
                             Создать новый тест-кейс
                         </Button>
                     </Link>
+
+                    {/* Список тест-кейсов для этого модуля */}
+                    <TestCaseList />
+
+                    
                 </Content>
             </Layout>
         </div>

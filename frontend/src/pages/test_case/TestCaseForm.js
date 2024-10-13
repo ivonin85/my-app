@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
-import { Form, Input, Select, Button, Typography, Row, Col, Card } from 'antd';
+import { Form, Input, Select, Button, Typography, Row, Col, Card, message } from 'antd';
+import { CopyOutlined } from '@ant-design/icons';
 import TestCaseService from '../../services/TestCaseService';
 import TagService from '../../services/TagService';
 import ProfileService from '../../services/ProfileService';
@@ -8,7 +9,7 @@ import TestCaseSteps from '../../components/test_case/TestCaseSteps';
 import TagSelect from '../../components/test_case/TagSelect';
 
 const { TextArea } = Input;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const TestCaseForm = () => {
     const { testCaseId } = useParams();
@@ -92,6 +93,15 @@ const TestCaseForm = () => {
         setSteps(steps.filter((_, i) => i !== index));
     };
 
+    const handleCopyUrl = () => {
+        const testCaseUrl = `${window.location.origin}/testcases/${testCaseId}`;
+        navigator.clipboard.writeText(testCaseUrl).then(() => {
+            message.success('URL тест-кейса скопирован в буфер обмена!');
+        }).catch(() => {
+            message.error('Не удалось скопировать URL.');
+        });
+    };
+
     const handleSubmit = () => {
         const testCaseData = {
             title,
@@ -123,6 +133,23 @@ const TestCaseForm = () => {
     return (
         <div>
             <Title level={2}>{testCaseId ? 'Редактирование тест-кейса' : 'Создание тест-кейса'}</Title>
+            {testCaseId && (
+            <Row align="middle" style={{ marginBottom: '16px' }}>
+                <Col>
+                    <Text strong style={{ fontSize: '16px', marginRight: '8px' }}>
+                        URL тест-кейса:
+                    </Text>
+                </Col>
+                <Col>
+                    <Input
+                        value={`${window.location.origin}/testcases/${testCaseId}`}
+                        readOnly
+                        style={{ width: '300px'}} // Устанавливаем фиксированную ширину
+                        addonAfter={<CopyOutlined onClick={handleCopyUrl} style={{ cursor: 'pointer' }} />}
+                    />
+                </Col>
+            </Row>
+        )}
             <Form onFinish={handleSubmit} layout="vertical">
                 <Row gutter={24}>
                     {/* Левая часть */}
