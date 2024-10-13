@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { Form, Input, Select, Button, Typography, Row, Col, Card } from 'antd';
 import TestCaseService from '../../services/TestCaseService';
 import TagService from '../../services/TagService';
@@ -216,6 +216,13 @@ const TestCaseForm = () => {
                 <Button type="primary" htmlType="submit">
                     {testCaseId ? 'Сохранить изменения' : 'Создать тест-кейс'}
                 </Button>
+
+                <Link to={`/projects/${projectId}/modules/${moduleId}`}>
+                    <Button style={{ marginLeft: '8px' }}>
+                    Отменить
+                    </Button>
+                </Link>
+
             </Form>
         </div>
     );

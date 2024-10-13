@@ -3,20 +3,19 @@ import { useParams, Link } from 'react-router-dom';
 import TestCaseList from '../../components/test_case/TestCaseList';
 import ModuleService from '../../services/ModuleService';
 import Navbar from '../../components/Navbar';
-import {Button} from 'antd';
+import { Layout, Button } from 'antd';
 import { ModuleActions } from '../../hooks/ModuleActions';
 import ModuleFormModal from '../module/ModuleFormModal';
+import Sidebar from '../../components/Sidebar';
 
 const ModuleDetailsPage = () => {
     const { moduleId, projectId } = useParams();
     const [module, setModule] = useState(null);
-
     const { moduleDelete } = ModuleActions(projectId);
-
     const [isModalVisible, setIsModalVisible] = useState(false);
-
     const openModal = () => setIsModalVisible(true);
     const closeModal = () => setIsModalVisible(false);
+    const { Sider, Content } = Layout; 
 
     useEffect(() => {
         ModuleService.getModuleById(moduleId)
@@ -29,28 +28,43 @@ const ModuleDetailsPage = () => {
     }
 
     return (
-        <div><div><Navbar /></div>
         <div>
-        <Button type="primary" onClick={openModal}>Редактировать модуль</Button>
-                        <ModuleFormModal 
-                            visible={isModalVisible} 
-                            onCancel={closeModal} 
-                            onOk={closeModal} 
-                            projectId={projectId} 
-                            moduleId={module.id}
-                        />
-            <Button type="dashed" onClick={() => moduleDelete(module.id)}>Удалить</Button>
-        </div>
-            <h1>{module.name}</h1>
-            <p>ID: {module.id}</p>
-            <p>Описание: {module.description || "Нет описания"}</p>
-            {module.parentId && <p>Родительский модуль ID: {module.parentId}</p>}
+            <Navbar />
+            <Layout style={{ marginLeft: 48 }}>
+                <Sider style={{ background: 'transparent', padding: 0, width: 256, borderRight: '1px solid #f0f0f0' }}>
+                    <Sidebar projectId={projectId} />
+                </Sider>
+                <Content style={{ padding: '24px', background: '#fff', minHeight: '100vh' }}>
+                    <h1>{module.name}</h1>
+                    <p>ID: {module.id}</p>
+                    <p>Описание: {module.description || "Нет описания"}</p>
+                    {module.parentId && <p>Родительский модуль ID: {module.parentId}</p>}
 
-            {/* Список тест-кейсов для этого модуля */}
-            <TestCaseList />
-            <Link to="/testcases/create" state={{ projectId, moduleId }}>
-                <Button type="primary" style={{ marginTop: '16px' }}>Создать новый тест-кейс</Button>
-            </Link>
+                    <Button type="primary" onClick={openModal} style={{ marginRight: '8px' }}>
+                        Редактировать модуль
+                    </Button>
+                    <Button type="dashed" onClick={() => moduleDelete(module.id)}>
+                        Удалить
+                    </Button>
+                    
+                    <ModuleFormModal
+                        visible={isModalVisible}
+                        onCancel={closeModal}
+                        onOk={closeModal}
+                        projectId={projectId}
+                        moduleId={module.id}
+                    />
+
+                    {/* Список тест-кейсов для этого модуля */}
+                    <TestCaseList />
+
+                    <Link to="/testcases/create" state={{ projectId, moduleId }}>
+                        <Button type="primary" style={{ marginTop: '16px' }}>
+                            Создать новый тест-кейс
+                        </Button>
+                    </Link>
+                </Content>
+            </Layout>
         </div>
     );
 };

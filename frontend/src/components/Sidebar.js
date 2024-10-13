@@ -3,8 +3,6 @@ import { Menu, Spin, Alert } from 'antd';
 import ModuleService from '../services/ModuleService';
 import { Link } from 'react-router-dom';
 
-const { SubMenu } = Menu;
-
 const ModuleNavigation = ({ projectId }) => {
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,16 +37,13 @@ const ModuleNavigation = ({ projectId }) => {
 
     // Проходим по модулям и распределяем дочерние по родителям
     modules.forEach((module) => {
-      // Проверяем, не является ли модуль родителем сам себе
       if (module.parentId === module.id) {
         return;
       }
 
       if (module.parentId === null) {
-        // Это корневой модуль
         rootModules.push(moduleMap[module.id]);
       } else if (moduleMap[module.parentId]) {
-        // Это дочерний модуль
         moduleMap[module.parentId].children.push(moduleMap[module.id]);
       }
     });
@@ -56,26 +51,22 @@ const ModuleNavigation = ({ projectId }) => {
     return rootModules;
   };
 
-  // Рендеринг пунктов меню
-  const renderMenuItems = (modules) => {
-    return modules.map((module) => {
-      if (module.children.length > 0) {
-        return (
-          <SubMenu key={module.id} title={module.name}>
-            {renderMenuItems(module.children)}
-          </SubMenu>
-        );
-      } else {
-        // Отображаем модуль, даже если у него нет детей
-        return (
-          <Menu.Item key={module.id}>
-            <Link to={`/projects/${projectId}/modules/${module.id}`}>
-              {module.name}
-            </Link>
-          </Menu.Item>
-        );
-      }
-    });
+  // Рекурсивная функция для рендеринга пунктов меню
+  const renderMenuItems = (modules, level = 0) => {
+    return modules.map((module) => (
+      <React.Fragment key={module.id}>
+        <Menu.Item
+          key={module.id}
+          style={{ paddingLeft: 24 + level * 16 }} // Отступ в зависимости от уровня
+        >
+          <Link to={`/projects/${projectId}/modules/${module.id}`}>
+            {module.name}
+          </Link>
+        </Menu.Item>
+        {/* Рекурсивно отображаем дочерние модули */}
+        {module.children.length > 0 && renderMenuItems(module.children, level + 1)}
+      </React.Fragment>
+    ));
   };
 
   if (loading) {
@@ -93,19 +84,7 @@ const ModuleNavigation = ({ projectId }) => {
       mode="inline"
       style={{ width: 256, height: '100%', position: 'fixed', left: 0 }}
     >
-      {moduleTree.map((module) => (
-        module.children.length > 0 ? (
-          <SubMenu key={module.id} title={module.name}>
-            {renderMenuItems(module.children)}
-          </SubMenu>
-        ) : (
-          <Menu.Item key={module.id}>
-            <Link to={`/projects/${projectId}/modules/${module.id}`}>
-              {module.name}
-            </Link>
-          </Menu.Item>
-        )
-      ))}
+      {renderMenuItems(moduleTree)}
     </Menu>
   );
 };
