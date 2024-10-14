@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.TagDTO;
+import com.example.backend.model.dto.TagDTO;
 import com.example.backend.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

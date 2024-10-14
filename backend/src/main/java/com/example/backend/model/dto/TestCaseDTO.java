@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package com.example.backend.model.dto;
 
 import lombok.Data;
 
@@ -20,6 +20,7 @@ public class TestCaseDTO {
     private List<String> tags;
     private Long executorId;
     private Long moduleId;
+    private Long projectId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

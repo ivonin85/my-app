@@ -1,9 +1,9 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.AuthRequest;
-import com.example.backend.dto.UserDto;
-import com.example.backend.model.User;
-import com.example.backend.model.VerificationToken;
+import com.example.backend.model.dto.AuthRequest;
+import com.example.backend.model.dto.UserDto;
+import com.example.backend.model.entity.User;
+import com.example.backend.model.entity.VerificationToken;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.repository.VerificationTokenRepository;
 import com.example.backend.security.JwtTokenProvider;

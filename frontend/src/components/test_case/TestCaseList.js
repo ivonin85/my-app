@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Table, Typography } from 'antd';
+import { Table, Typography, Drawer } from 'antd';
 import TestCaseService from '../../services/TestCaseService';
+import TestCaseForm from '../../pages/test_case/TestCaseForm';
 
 const { Title } = Typography;
 
 const TestCaseList = () => {
     const { moduleId, projectId } = useParams();
     const [testCases, setTestCases] = useState([]);
+    const [drawerVisible, setDrawerVisible] = useState(false);
+    const [selectedTestCaseId, setSelectedTestCaseId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -70,13 +73,15 @@ const TestCaseList = () => {
             key: 'updatedAt',
             render: (text) => new Date(text).toLocaleDateString(),
         },
-        ,
         {
             title: 'Статус',
             dataIndex: 'status',
             key: 'status',
         },
     ];
+
+    const openDrawer = () => setDrawerVisible(true);
+    const closeDrawer = () => setDrawerVisible(false);
 
     return (
         <div>
@@ -91,9 +96,19 @@ const TestCaseList = () => {
                 rowClassName="test-case-row"
                 onRow={(record) => ({
                     onClick: () => {
-                        navigate(`/testcases/${record.id}`, { state: { projectId, moduleId } });
+                        setSelectedTestCaseId(record.id);
+                        openDrawer(record.id);
+                        navigate(`/projects/${projectId}/modules/${moduleId}`, { state: { projectId, moduleId, testCaseId: record.id } });
                     },
                 })}
+            />
+            <TestCaseForm
+                drawerVisible={drawerVisible}
+                openDrawer={openDrawer}
+                closeDrawer={closeDrawer}
+                projectId={projectId}
+                moduleId={moduleId}
+                testCaseId={selectedTestCaseId}
             />
         </div>
     );

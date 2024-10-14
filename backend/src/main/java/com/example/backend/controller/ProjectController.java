@@ -1,8 +1,8 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.ProjectDTO;
-import com.example.backend.model.Project;
-import com.example.backend.model.User;
+import com.example.backend.model.dto.ProjectDTO;
+import com.example.backend.model.entity.Project;
+import com.example.backend.model.entity.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.ProjectService;
 import com.example.backend.service.UserService;

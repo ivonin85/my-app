@@ -1,9 +1,9 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.TestCaseDTO;
-import com.example.backend.dto.TestStepDTO;
-import com.example.backend.model.Module;
-import com.example.backend.model.*;
+import com.example.backend.model.dto.TestCaseDTO;
+import com.example.backend.model.dto.TestStepDTO;
+import com.example.backend.model.entity.*;
+import com.example.backend.model.entity.Module;
 import com.example.backend.repository.TagRepository;
 import com.example.backend.repository.TestCaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +108,12 @@ public class TestCaseService {
             testCase.setModule(module);
         }
 
+        if (dto.getProjectId() != null) {
+            Project project = new Project();
+            project.setId(dto.getProjectId());
+            testCase.setProject(project);
+        }
+
         testCase.setCreatedAt(dto.getCreatedAt());
         testCase.setUpdatedAt(dto.getUpdatedAt());
 
@@ -152,6 +158,10 @@ public class TestCaseService {
 
         if (entity.getModule() != null) {
             dto.setModuleId(entity.getModule().getId());
+        }
+
+        if (entity.getProject() != null) {
+            dto.setProjectId(entity.getProject().getId());
         }
 
         dto.setCreatedAt(entity.getCreatedAt());

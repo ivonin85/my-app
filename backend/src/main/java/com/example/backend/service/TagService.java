@@ -1,8 +1,8 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.TagDTO;
+import com.example.backend.model.dto.TagDTO;
 import com.example.backend.service.mapper.TagMapper;
-import com.example.backend.model.Tag;
+import com.example.backend.model.entity.Tag;
 import com.example.backend.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

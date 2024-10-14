@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package com.example.backend.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -45,6 +45,11 @@ public class TestCase {
     @ManyToOne
     @JoinColumn(name = "module_id")
     private Module module;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
 
     @CreationTimestamp
     private LocalDateTime createdAt;

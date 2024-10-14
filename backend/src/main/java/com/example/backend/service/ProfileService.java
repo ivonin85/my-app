@@ -1,8 +1,8 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.ProfileDTO;
-import com.example.backend.model.Profile;
-import com.example.backend.model.User;
+import com.example.backend.model.dto.ProfileDTO;
+import com.example.backend.model.entity.Profile;
+import com.example.backend.model.entity.User;
 import com.example.backend.repository.ProfileRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.mapper.ProfileMapper;

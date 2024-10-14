@@ -1,9 +1,9 @@
 package com.example.backend.service;
 
 
-import com.example.backend.dto.ModuleDTO;
-import com.example.backend.model.Module;
-import com.example.backend.model.Project;
+import com.example.backend.model.dto.ModuleDTO;
+import com.example.backend.model.entity.Module;
+import com.example.backend.model.entity.Project;
 import com.example.backend.repository.ModuleRepository;
 import com.example.backend.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;

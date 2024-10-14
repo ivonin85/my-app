@@ -1,7 +1,7 @@
 package com.example.backend.service.mapper;
 
-import com.example.backend.dto.ProfileDTO;
-import com.example.backend.model.Profile;
+import com.example.backend.model.dto.ProfileDTO;
+import com.example.backend.model.entity.Profile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

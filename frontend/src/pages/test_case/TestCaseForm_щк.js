@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
-import { Form, Input, Select, Button, Typography, Row, Col, Card, message, Drawer } from 'antd';
+import { Form, Input, Select, Button, Typography, Row, Col, Card, message } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import TestCaseService from '../../services/TestCaseService';
 import TagService from '../../services/TagService';
@@ -11,9 +11,10 @@ import TagSelect from '../../components/test_case/TagSelect';
 const { TextArea } = Input;
 const { Title, Text } = Typography;
 
-const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, moduleId, testCaseId }) => {
+const TestCaseForm = () => {
+    const { testCaseId } = useParams();
     const location = useLocation();
-    const { projectId: initialProjectId, moduleId: initialModuleId } = location.state || {};
+    const { projectId, moduleId: initialModuleId } = location.state || {};
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [preconditions, setPreconditions] = useState('');
@@ -28,6 +29,7 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
     const [tagNames, setTagNames] = useState([]);
     const [allTags, setAllTags] = useState([]);
     const [executorId, setExecutorId] = useState(null);
+    const [moduleId, setModuleId] = useState(initialModuleId);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -65,6 +67,7 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
                             setTagNames([]);
                         });
                     setExecutorId(testCase.executor?.id || null);
+                    setModuleId(testCase.moduleId);
                 })
                 .catch(error => console.error('Ошибка при загрузке тест-кейса', error));
         }
@@ -112,8 +115,8 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
             comments,
             tags: tagNames,
             executorId,
-            moduleId: moduleId,
-            projectId: projectId,
+            moduleId,
+            projectId
         };
 
         const request = testCaseId
@@ -123,26 +126,15 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
         request
             .then(() => {
                 alert(`Тест-кейс ${testCaseId ? 'обновлен' : 'создан'} успешно!`);
-                closeDrawer();
                 navigate(`/projects/${projectId}/modules/${moduleId}`, { state: { projectId, moduleId } });
             })
             .catch(error => console.error(`Ошибка при ${testCaseId ? 'обновлении' : 'создании'} тест-кейса`, error));
     };
 
-
-
     return (
         <div>
-        
-            <Drawer
-                title={testCaseId ? 'Редактирование тест-кейса' : 'Создание тест-кейса'}
-                placement="left"
-                onClose={closeDrawer}
-                visible={drawerVisible}
-                width="95%"
-            >
-                <Form onFinish={handleSubmit} layout="vertical">
-                {testCaseId && (
+            <Title level={2}>{testCaseId ? 'Редактирование тест-кейса' : 'Создание тест-кейса'}</Title>
+            {testCaseId && (
             <Row align="middle" style={{ marginBottom: '16px' }}>
                 <Col>
                     <Text strong style={{ fontSize: '16px', marginRight: '8px' }}>
@@ -159,6 +151,7 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
                 </Col>
             </Row>
         )}
+            <Form onFinish={handleSubmit} layout="vertical">
                 <Row gutter={24}>
                     {/* Левая часть */}
                     <Col span={16}>
@@ -251,13 +244,14 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
                 <Button type="primary" htmlType="submit">
                     {testCaseId ? 'Сохранить изменения' : 'Создать тест-кейс'}
                 </Button>
-                
 
-                <Button onClick={closeDrawer} style={{ marginLeft: '8px' }}>
+                <Link to={`/projects/${projectId}/modules/${moduleId}`}>
+                    <Button style={{ marginLeft: '8px' }}>
                     Отменить
-                </Button>
-                </Form>
-            </Drawer>
+                    </Button>
+                </Link>
+
+            </Form>
         </div>
     );
 };

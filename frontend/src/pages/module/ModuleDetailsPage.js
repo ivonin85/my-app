@@ -7,6 +7,7 @@ import { Layout, Button } from 'antd';
 import { ModuleActions } from '../../hooks/ModuleActions';
 import ModuleFormModal from '../module/ModuleFormModal';
 import Sidebar from '../../components/Sidebar';
+import TestCaseForm from '../test_case/TestCaseForm';
 
 const ModuleDetailsPage = () => {
     const { moduleId, projectId } = useParams();
@@ -16,12 +17,21 @@ const ModuleDetailsPage = () => {
     const openModal = () => setIsModalVisible(true);
     const closeModal = () => setIsModalVisible(false);
     const { Sider, Content } = Layout; 
+    const [drawerVisible, setDrawerVisible] = useState(false);
 
     useEffect(() => {
         ModuleService.getModuleById(moduleId)
             .then(response => setModule(response.data))
             .catch(error => console.error('Ошибка при загрузке модуля', error));
     }, [moduleId]);
+
+    const openDrawer = () => {
+        setDrawerVisible(true);
+    };
+    
+    const closeDrawer = () => {
+        setDrawerVisible(false);
+    };
 
     if (!module) {
         return <p>Загрузка...</p>;
@@ -53,11 +63,17 @@ const ModuleDetailsPage = () => {
                         moduleId={module.id}
                     />
 
-                    <Link to="/testcases/create" state={{ projectId, moduleId }}>
-                        <Button type="primary" style={{ marginTop: '16px', marginLeft: '8px' }}>
-                            Создать новый тест-кейс
-                        </Button>
-                    </Link>
+                    <Button type="primary" onClick={openDrawer} style={{ marginTop: '16px', marginLeft: '8px' }}>
+                        Создать новый тест-кейс
+                    </Button>
+
+                    <TestCaseForm
+                        drawerVisible={drawerVisible}
+                        openDrawer={openDrawer}
+                        closeDrawer={closeDrawer}
+                        projectId={projectId}
+                        moduleId={moduleId}
+                    />
 
                     {/* Список тест-кейсов для этого модуля */}
                     <TestCaseList />

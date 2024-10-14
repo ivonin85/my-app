@@ -1,6 +1,6 @@
 package com.example.backend.repository;
 
-import com.example.backend.model.Profile;
+import com.example.backend.model.entity.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
