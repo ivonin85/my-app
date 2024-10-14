@@ -5,7 +5,7 @@ import ModuleService from '../../services/ModuleService';
 import Navbar from '../../components/Navbar';
 import { Layout, Button } from 'antd';
 import { ModuleActions } from '../../hooks/ModuleActions';
-import ModuleFormModal from '../module/ModuleFormModal';
+import ModuleFormModal from './ModuleFormModal';
 import Sidebar from '../../components/Sidebar';
 import TestCaseForm from '../test_case/TestCaseForm';
 
@@ -14,7 +14,7 @@ const ModuleDetailsPage = () => {
     const [module, setModule] = useState(null);
     const { moduleDelete } = ModuleActions(projectId);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [shouldReload, setShouldReload] = useState(false); // Добавлено состояние для управления перезагрузкой
+    const [shouldReload, setShouldReload] = useState(false);
     const openModal = () => setIsModalVisible(true);
     const closeModal = () => setIsModalVisible(false);
     const { Sider, Content } = Layout; 

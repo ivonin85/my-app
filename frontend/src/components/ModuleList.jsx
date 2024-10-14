@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { ModuleActions } from '../hooks/ModuleActions';
-import ModuleFormModal from './../pages/module/ModuleFormModal';
+import ModuleFormModal from '../pages/module/ModuleFormModal';
 
 const ModuleList = ({ modules, projectId, refreshModules }) => {
     const { moduleDelete } = ModuleActions(projectId, refreshModules);
