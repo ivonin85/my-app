@@ -14,6 +14,7 @@ const ModuleDetailsPage = () => {
     const [module, setModule] = useState(null);
     const { moduleDelete } = ModuleActions(projectId);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [shouldReload, setShouldReload] = useState(false); // Добавлено состояние для управления перезагрузкой
     const openModal = () => setIsModalVisible(true);
     const closeModal = () => setIsModalVisible(false);
     const { Sider, Content } = Layout; 
@@ -32,12 +33,15 @@ const ModuleDetailsPage = () => {
         fetchModule();
     }, [moduleId]);
 
-    const openDrawer = () => {
-        setDrawerVisible(true);
-    };
+    const openDrawer = () => setDrawerVisible(true);
     
     const closeDrawer = () => {
         setDrawerVisible(false);
+    };
+
+    const handleTestCaseUpdate = () => {
+        setShouldReload(!shouldReload); // Меняем состояние, чтобы инициировать перезагрузку списка
+        closeDrawer(); // Закрываем Drawer после обновления
     };
 
     if (!module) {
@@ -80,12 +84,11 @@ const ModuleDetailsPage = () => {
                         closeDrawer={closeDrawer}
                         projectId={projectId}
                         moduleId={moduleId}
+                        onUpdate={handleTestCaseUpdate} // Передаем функцию обновления
                     />
 
-                    {/* Список тест-кейсов для этого модуля */}
-                    <TestCaseList />
-
-                    
+                    {/* Передаем состояние shouldReload в TestCaseList */}
+                    <TestCaseList shouldReload={shouldReload} />
                 </Content>
             </Layout>
         </div>

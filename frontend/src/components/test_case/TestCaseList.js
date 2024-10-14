@@ -7,13 +7,16 @@ import TestCaseActions from '../../hooks/TestCaseActions';
 
 const { Title } = Typography;
 
-const TestCaseList = () => {
+const TestCaseList = ({ shouldReload }) => {
     const { moduleId, projectId } = useParams();
-    //const [testCases, setTestCases] = useState([]);
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [selectedTestCaseId, setSelectedTestCaseId] = useState(null);
     const { testCases, loading, error, fetchTestCases } = TestCaseActions(moduleId);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchTestCases(); // Перезагружаем список при изменении shouldReload
+    }, [shouldReload, moduleId]);
 
     if (loading) return <p>Загрузка тест-кейсов...</p>;
     if (error) return <p>Ошибка: {error.message}</p>;
