@@ -11,7 +11,7 @@ import TagSelect from '../../components/test_case/TagSelect';
 const { TextArea } = Input;
 const { Title, Text } = Typography;
 
-const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, moduleId, testCaseId }) => {
+const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, moduleId, testCaseId, onUpdate }) => {
     const location = useLocation();
     const { projectId: initialProjectId, moduleId: initialModuleId } = location.state || {};
     const [title, setTitle] = useState('');
@@ -124,6 +124,10 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
             .then(() => {
                 alert(`Тест-кейс ${testCaseId ? 'обновлен' : 'создан'} успешно!`);
                 closeDrawer();
+              
+                if (onUpdate && typeof onUpdate === 'function') {
+                    onUpdate();
+                }
                 navigate(`/projects/${projectId}/modules/${moduleId}`, { state: { projectId, moduleId } });
             })
             .catch(error => console.error(`Ошибка при ${testCaseId ? 'обновлении' : 'создании'} тест-кейса`, error));

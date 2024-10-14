@@ -20,9 +20,16 @@ const ModuleDetailsPage = () => {
     const [drawerVisible, setDrawerVisible] = useState(false);
 
     useEffect(() => {
-        ModuleService.getModuleById(moduleId)
-            .then(response => setModule(response.data))
-            .catch(error => console.error('Ошибка при загрузке модуля', error));
+        const fetchModule = async () => {
+            try {
+                const response = await ModuleService.getModuleById(moduleId);
+                setModule(response.data);
+            } catch (error) {
+                console.error('Ошибка при загрузке модуля', error);
+            }
+        };
+
+        fetchModule();
     }, [moduleId]);
 
     const openDrawer = () => {

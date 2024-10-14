@@ -3,25 +3,21 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Table, Typography, Drawer } from 'antd';
 import TestCaseService from '../../services/TestCaseService';
 import TestCaseForm from '../../pages/test_case/TestCaseForm';
+import TestCaseActions from '../../hooks/TestCaseActions';
 
 const { Title } = Typography;
 
 const TestCaseList = () => {
     const { moduleId, projectId } = useParams();
-    const [testCases, setTestCases] = useState([]);
+    //const [testCases, setTestCases] = useState([]);
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [selectedTestCaseId, setSelectedTestCaseId] = useState(null);
+    const { testCases, loading, error, fetchTestCases } = TestCaseActions(moduleId);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        TestCaseService.getTestCasesByModuleId(moduleId)
-            .then(response => setTestCases(response.data))
-            .catch(error => console.error('Ошибка при загрузке тест-кейсов', error));
-    }, [moduleId]);
-
-    if (testCases.length === 0) {
-        return <p>Тест-кейсов нет</p>;
-    }
+    if (loading) return <p>Загрузка тест-кейсов...</p>;
+    if (error) return <p>Ошибка: {error.message}</p>;
+    if (testCases.length === 0) return <p>Тест-кейсов нет</p>;
 
     const priorityColors = {
         'Высокий': 'red',
@@ -109,6 +105,7 @@ const TestCaseList = () => {
                 projectId={projectId}
                 moduleId={moduleId}
                 testCaseId={selectedTestCaseId}
+                onUpdate={fetchTestCases}
             />
         </div>
     );
