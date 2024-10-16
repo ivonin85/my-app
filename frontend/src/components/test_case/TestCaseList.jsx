@@ -84,7 +84,6 @@ const TestCaseList = ({ shouldReload }) => {
 
     return (
         <div>
-            <Title level={2}>Список тест-кейсов</Title>
             <Table
                 dataSource={testCases}
                 columns={columns}

@@ -3,11 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import TestCaseList from '../../components/test_case/TestCaseList';
 import ModuleService from '../../services/ModuleService';
 import Navbar from '../../components/Navbar';
-import { Layout, Button } from 'antd';
+import { Layout, Button, Typography } from 'antd';
 import { ModuleActions } from '../../hooks/ModuleActions';
 import ModuleFormModal from './ModuleFormModal';
 import Sidebar from '../../components/Sidebar';
 import TestCaseForm from '../test_case/TestCaseForm';
+
+const { Title } = Typography;
 
 const ModuleDetailsPage = () => {
     const { moduleId, projectId } = useParams();
@@ -52,13 +54,16 @@ const ModuleDetailsPage = () => {
         <div>
             <Navbar />
             <Layout style={{ marginLeft: 48 }}>
-                <Sider style={{ background: 'transparent', padding: 0, width: 256, borderRight: '1px solid #f0f0f0' }}>
+                <Sider>
                     <Sidebar projectId={projectId} />
                 </Sider>
-                <Content style={{ padding: '24px', background: '#fff', minHeight: '100vh' }}>
+                <Content style={{ 
+                    padding: '24px', 
+                    background: '#fff', 
+                    minHeight: '100vh', 
+                    paddingTop: '100px',
+                    }}>
                     <h1>{module.name}</h1>
-                    {module.parentId && <p>Родительский модуль ID: {module.parentId}</p>}
-
                     <Button type="primary" onClick={openModal} style={{ marginRight: '8px' }}>
                         Редактировать модуль
                     </Button>
@@ -86,9 +91,19 @@ const ModuleDetailsPage = () => {
                         moduleId={moduleId}
                         onUpdate={handleTestCaseUpdate} // Передаем функцию обновления
                     />
+                    
+                    <Title level={2}>Список тест-кейсов</Title>
 
                     {/* Передаем состояние shouldReload в TestCaseList */}
+                    <div style={{
+                        width: '85%',
+                        height: '100%',
+                        maxHeight: 'calc(100vh - 64px)', // Максимальная высота для прокрутки
+                        overflowY: 'auto', // Включение вертикальной прокрутки
+                        position: 'fixed'
+                    }}>
                     <TestCaseList shouldReload={shouldReload} />
+                    </div>
                 </Content>
             </Layout>
         </div>

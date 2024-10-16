@@ -82,7 +82,16 @@ const ModuleNavigation = ({ projectId }) => {
   return (
     <Menu
       mode="inline"
-      style={{ width: 256, height: '100%', position: 'fixed', left: 0 }}
+      style={{
+        width: 256,
+        height: '89%',
+        maxHeight: 'calc(100vh - 64px)', // Максимальная высота для прокрутки
+        overflowY: 'auto', // Включение вертикальной прокрутки
+        position: 'fixed',
+        background: '#fff',
+        left: 0,
+        top: '120px',
+      }}
     >
       {renderMenuItems(moduleTree)}
     </Menu>
