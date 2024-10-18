@@ -2,7 +2,10 @@ package com.example.backend.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -25,10 +28,6 @@ public class TestPlan {
     @Column(name = "tag_id")
     private List<Long> tagIds; // Список ID тегов, из которых были добавлены тест-кейсы
 
-    /*@OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "test_plan_cases", joinColumns = @JoinColumn(name = "test_plan_id"), inverseJoinColumns = @JoinColumn(name = "test_case_id"))
-    private List<TestCase> testCases; // Тест-кейсы, добавленные в тест-план*/
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "test_plan_cases",
@@ -38,5 +37,8 @@ public class TestPlan {
     )
     private List<TestCase> testCases;
 
-
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

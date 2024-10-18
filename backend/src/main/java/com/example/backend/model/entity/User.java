@@ -2,6 +2,10 @@ package com.example.backend.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -20,6 +24,11 @@ public class User {
 
     @Column(nullable = false)
     private Boolean emailVerified;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public boolean isEmailVerified() {
         return emailVerified;

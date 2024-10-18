@@ -2,6 +2,8 @@ package com.example.backend.model.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class ProfileDTO {
     private Long id;
@@ -11,4 +13,6 @@ public class ProfileDTO {
     private String patronymic;
     private String dateOfBirth;
     private String photoUrl;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

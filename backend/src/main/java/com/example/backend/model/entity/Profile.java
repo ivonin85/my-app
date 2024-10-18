@@ -2,6 +2,10 @@ package com.example.backend.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -21,4 +25,9 @@ public class Profile {
     private String patronymic;
     private String dateOfBirth;
     private String photoUrl;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
