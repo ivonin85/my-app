@@ -6,6 +6,7 @@ import com.example.backend.model.entity.Module;
 import com.example.backend.model.entity.Project;
 import com.example.backend.repository.ModuleRepository;
 import com.example.backend.repository.ProjectRepository;
+import com.example.backend.service.mapper.ModuleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +28,13 @@ public class ModuleService {
 
     public List<ModuleDTO> getModulesByProjectId(Long projectId) {
         List<Module> modules = moduleRepository.findByProjectId(projectId);
-        return modules.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return modules.stream().map(this::moduleToModuleDTO).collect(Collectors.toList());
     }
 
     public ModuleDTO getModuleById(Long moduleId) {
         Module module = moduleRepository.findById(moduleId)
                 .orElseThrow(() -> new RuntimeException("Module not found with id " + moduleId));
-        return convertToDTO(module);
+        return moduleToModuleDTO(module);
     }
 
     public void deleteModule(Long moduleId) {
@@ -61,7 +62,7 @@ public class ModuleService {
         Module savedModule = moduleRepository.save(module);
 
         // Возвращаем DTO после сохранения
-        return convertToDTO(savedModule);
+        return moduleToModuleDTO(savedModule);
     }
 
     public ModuleDTO updateModule(Long moduleId, ModuleDTO moduleDTO) {
@@ -78,21 +79,11 @@ public class ModuleService {
         }
 
         Module updatedModule = moduleRepository.save(module);
-        return convertToDTO(updatedModule);
+        return moduleToModuleDTO(updatedModule);
     }
 
     // Метод для конвертации Module в ModuleDTO
-    private ModuleDTO convertToDTO(Module module) {
-        ModuleDTO dto = new ModuleDTO();
-        dto.setId(module.getId());
-        dto.setName(module.getName());
-
-        if (module.getParent() != null) {
-            dto.setParentId(module.getParent().getId());
-        }
-
-        dto.setProjectId(module.getProject().getId());
-
-        return dto;
+    private ModuleDTO moduleToModuleDTO(Module module) {
+        return ModuleMapper.INSTANCE.moduleToModuleDTO(module);
     }
 }
