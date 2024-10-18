@@ -33,7 +33,7 @@ const CreateTestPlan = () => {
         const { name } = values;
 
         try {
-            const response = await axios.post('http://localhost:8080/api/testplans/create', {
+            const response = await axios.post('http://localhost:8080/api/testplan/create', {
                 name,
                 moduleIds: selectedModules,
                 tagIds: selectedTags,
