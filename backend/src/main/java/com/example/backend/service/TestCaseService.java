@@ -6,6 +6,7 @@ import com.example.backend.model.entity.*;
 import com.example.backend.model.entity.Module;
 import com.example.backend.repository.TagRepository;
 import com.example.backend.repository.TestCaseRepository;
+import com.example.backend.service.mapper.TestCaseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,9 @@ public class TestCaseService {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private TestCaseMapper testCaseMapper;
 
     public TestCaseDTO createTestCase(TestCaseDTO testCaseDTO) {
         TestCase testCase = mapToEntity(testCaseDTO);
@@ -60,6 +64,13 @@ public class TestCaseService {
 
     public void deleteTestCase(Long id) {
         testCaseRepository.deleteById(id);
+    }
+
+    public List<TestCaseDTO> getTestCasesByTag(Long tagId) {
+        List<TestCase> testCases = testCaseRepository.findByTagId(tagId);
+        return testCases.stream()
+                .map(testCaseMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     private TestCase mapToEntity(TestCaseDTO dto) {

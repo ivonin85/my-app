@@ -14,7 +14,7 @@ const Navbar = () => {
         background: '#fff' 
         }}>
       <div className="logo" style={{ padding: '8px' }}>
-        <img src={logo} alt="Logo" />
+      <Link to="/projects"><img src={logo} alt="Logo" /></Link>
       </div>
       <Divider style={{ margin: '1px 0' }} />
       <Menu mode="horizontal" style={{ marginBottom: '16px' }}>
@@ -23,6 +23,9 @@ const Navbar = () => {
         </Menu.Item>
         <Menu.Item key="projects">
           <Link to="/projects">Проекты</Link>
+        </Menu.Item>
+        <Menu.Item key="test_plans">
+          <Link to="/create_test_plan">Тест-планы</Link>
         </Menu.Item>
       </Menu>
     </div>

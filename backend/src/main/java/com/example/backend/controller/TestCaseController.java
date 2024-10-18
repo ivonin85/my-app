@@ -1,12 +1,15 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.dto.TestCaseDTO;
+import com.example.backend.model.entity.TestCase;
 import com.example.backend.service.TestCaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/testcases")
@@ -41,5 +44,11 @@ public class TestCaseController {
     public ResponseEntity<Void> deleteTestCase(@PathVariable Long testCaseId) {
         testCaseService.deleteTestCase(testCaseId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/by-tag/{tagId}")
+    public ResponseEntity<List<TestCaseDTO>> getTestCasesByTag(@PathVariable Long tagId) {
+        List<TestCaseDTO> testCaseDTOs = testCaseService.getTestCasesByTag(tagId);
+        return new ResponseEntity<>(testCaseDTOs, HttpStatus.OK);
     }
 }
