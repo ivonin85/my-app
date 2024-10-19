@@ -24,8 +24,11 @@ const Navbar = () => {
         <Menu.Item key="projects">
           <Link to="/projects">Проекты</Link>
         </Menu.Item>
+        <Menu.Item key="create_test_plan">
+          <Link to="/create_test_plan">Создать тест-планы</Link>
+        </Menu.Item>
         <Menu.Item key="test_plans">
-          <Link to="/create_test_plan">Тест-планы</Link>
+          <Link to="/test_plans">Тест-планы</Link>
         </Menu.Item>
       </Menu>
     </div>

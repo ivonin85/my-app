@@ -6,8 +6,6 @@ import com.example.backend.model.dto.TestPlanDTO;
 import com.example.backend.model.entity.TestCase;
 import com.example.backend.model.entity.TestPlan;
 import com.example.backend.repository.TestPlanRepository;
-import com.example.backend.service.mapper.TestCaseMapper;
-import com.example.backend.service.mapper.TestPlanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class TestPlanService {
@@ -25,11 +24,6 @@ public class TestPlanService {
     @Autowired
     private TestCaseService testCaseService;
 
-    @Autowired
-    private TestPlanMapper testPlanMapper;
-
-    @Autowired
-    private TestCaseMapper testCaseMapper;
 
     public TestPlanDTO createTestPlan(String name, List<Long> moduleIds, List<Long> tagIds) {
         TestPlan testPlan = new TestPlan();
@@ -37,14 +31,13 @@ public class TestPlanService {
         testPlan.setModuleIds(moduleIds);
         testPlan.setTagIds(tagIds);
 
-        // Используем Set для устранения дубликатов
         Set<TestCase> testCases = new HashSet<>();
 
         // Получаем тест-кейсы по модулям
         for (Long moduleId : moduleIds) {
             List<TestCaseDTO> moduleTestCaseDTOs = testCaseService.getTestCasesByModule(moduleId);
             List<TestCase> moduleTestCases = moduleTestCaseDTOs.stream()
-                    .map(testCaseMapper::toEntity)
+                    .map(testCaseService::mapToEntity)
                     .toList();
             testCases.addAll(moduleTestCases);
         }
@@ -53,7 +46,7 @@ public class TestPlanService {
         for (Long tagId : tagIds) {
             List<TestCaseDTO> tagTestCaseDTOs = testCaseService.getTestCasesByTag(tagId);
             List<TestCase> tagTestCases = tagTestCaseDTOs.stream()
-                    .map(testCaseMapper::toEntity)
+                    .map(testCaseService::mapToEntity)
                     .toList();
             testCases.addAll(tagTestCases);
         }
@@ -62,13 +55,34 @@ public class TestPlanService {
         testPlan.setTestCases(new ArrayList<>(testCases));
         TestPlan savedTestPlan = testPlanRepository.save(testPlan);
 
-        return testPlanMapper.toDTO(savedTestPlan);
+        testPlanToDTO(savedTestPlan);
+
+        return testPlanToDTO(savedTestPlan);
     }
 
     public TestPlanDTO getTestPlanById(Long id) {
         TestPlan testPlan = testPlanRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Test Plan not found"));
-        return testPlanMapper.toDTO(testPlan);
+        return testPlanToDTO(testPlan);
+    }
+
+    private TestPlanDTO testPlanToDTO(TestPlan testPlan) {
+        if (testPlan == null) {
+            return null;
+        }
+
+        TestPlanDTO testPlanDTO = new TestPlanDTO();
+        testPlanDTO.setId(testPlan.getId());
+        testPlanDTO.setName(testPlan.getName());
+        testPlanDTO.setTagIds(testPlan.getTagIds());
+        testPlanDTO.setModuleIds(testPlan.getModuleIds());
+
+        List<TestCaseDTO> testCaseDTOs = testPlan.getTestCases().stream()
+                .map(testCaseService::mapToDTO)
+                .collect(Collectors.toList());
+
+        testPlanDTO.setTestCases(testCaseDTOs);
+        return testPlanDTO;
     }
 }
 
