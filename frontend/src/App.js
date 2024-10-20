@@ -26,7 +26,7 @@ function App() {
             <Route path="/verify" element={<VerificationPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/new" element={<ProjectCreatePage />} />
-            <Route path="/projects/:id" element={<ProjectDetailsPage />} />
+            <Route path="/projects/:projectId" element={<ProjectDetailsPage />} />
             <Route path="/projects/:id/edit" element={<ProjectEditPage />} />
             <Route path="/modules" element={<ModuleFormModal />} />
             <Route path="/projects/:projectId/modules" element={<ModuleFormModal />} />

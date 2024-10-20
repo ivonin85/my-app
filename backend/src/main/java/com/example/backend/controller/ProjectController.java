@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.dto.ProjectDTO;
+import com.example.backend.model.dto.UserDto;
 import com.example.backend.model.entity.Project;
 import com.example.backend.model.entity.User;
 import com.example.backend.repository.UserRepository;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/projects")
+@RequestMapping("/api/project")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ProjectController {
 
@@ -46,6 +47,7 @@ public class ProjectController {
             projectData.setUser(foundUser);
             projectData.setTitle(project.getTitle());
             projectData.setDescription(project.getDescription());
+            projectData.setOwner(foundUser);
         });
 
 
@@ -56,6 +58,7 @@ public class ProjectController {
         projectDTO.setUserId(createdProject.getUser().getId());
         projectDTO.setTitle(createdProject.getTitle());
         projectDTO.setDescription(createdProject.getDescription());
+        projectDTO.setOwnerId(createdProject.getUser().getId());
 
 
         return ResponseEntity.status(HttpStatus.CREATED).body(projectDTO);
@@ -70,6 +73,12 @@ public class ProjectController {
     @DeleteMapping("/{id}")
     public void deleteProject(@PathVariable Long id) {
         projectService.deleteProject(id);
+    }
+
+    @PostMapping("/{projectId}/members")
+    public ResponseEntity<Void> addMember(@PathVariable Long projectId, @RequestBody UserDto request) {
+        projectService.addMemberToProject(projectId, request.getId());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")

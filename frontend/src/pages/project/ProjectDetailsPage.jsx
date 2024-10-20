@@ -7,10 +7,11 @@ import Navbar from '../../components/Navbar';
 import Sidebar  from '../../components/Sidebar';
 import { Layout, Button} from 'antd';
 import ModuleFormModal from '../module/ModuleFormModal';
+import AddMemberModal from '../../components/project/AddMemberModal';
 
 
 const ProjectDetailsPage = () => {
-    const { id } = useParams(); // Получаем id проекта из URL
+    const { projectId } = useParams(); // Получаем projectId проекта из URL
     const navigate = useNavigate(); // Для навигации на страницу редактирования
     const [project, setProject] = useState(null);
     const [modules, setModules] = useState([]); // Для хранения списка модулей
@@ -20,30 +21,44 @@ const ProjectDetailsPage = () => {
     const openModal = () => setIsModalVisible(true);
     const closeModal = () => setIsModalVisible(false);
 
-    useEffect(() => {
-        ProjectService.getProjectById(id)
+    const [isAddMemberVisible, setIsAddMemberVisible] = useState(false); // Для модального окна добавления пользователя
+    const openAddMemberModal = () => setIsAddMemberVisible(true);
+    const closeAddMemberModal = () => setIsAddMemberVisible(false);
+
+    const refreshProject = () => {
+        ProjectService.getProjectById(projectId)
             .then(response => setProject(response.data))
             .catch(error => console.error('Ошибка при загрузке проекта', error));
-    }, [id]);
+    };
+
+    useEffect(() => {
+        refreshProject();
+    }, [projectId]);
+
+    //useEffect(() => {
+    //   ProjectService.getProjectById(projectId)
+    //       .then(response => setProject(response.data))
+    //        .catch(error => console.error('Ошибка при загрузке проекта', error));
+    //}, [projectId]);
 
 
     useEffect(() => {
-        ModuleService.getModulesByProjectId(id)
+        ModuleService.getModulesByProjectId(projectId)
             .then(response => setModules(response.data))
             .catch(error => console.error('Ошибка при загрузке модулей', error));
-    }, [id]);
+    }, [projectId]);
 
     if (!project) {
         return <p>Загрузка...</p>;
     }
 
     const handleEditClick = () => {
-        navigate(`/projects/${id}/edit`);
+        navigate(`/projects/${projectId}/edit`);
     };
 
     // Обновляем список модулей после удаления
     const refreshModules = () => {
-        ModuleService.getModulesByProjectId(id)
+        ModuleService.getModulesByProjectId(projectId)
             .then(response => setModules(response.data))
             .catch(error => console.error('Ошибка при обновлении модулей', error));
     };
@@ -53,17 +68,26 @@ const ProjectDetailsPage = () => {
         <div><Navbar /></div>
             <Layout style={{ marginLeft: 48 }}>
                 <Sider style={{background: 'transparent', padding: 0, width: 256, borderRight: '1px solid #f0f0f0',}}>
-                    <Sidebar projectId={id} />
+                    <Sidebar projectId={projectId} />
                 </Sider>
-                <Content style={{ padding: '24px', background: '#fff', minHeight: '100vh' }}>
+                <Content style={{ paddingTop: '45px', padding: '24px', background: '#fff', minHeight: '100vh' }}>
                     <h1>{project.title}</h1>
                     <p>{project.description}</p>
             
             {/* Кнопка для перехода на страницу редактирования */}
             <Button type="dashed" onClick={handleEditClick}>Редактировать проект</Button>
 
+            {/* Кнопка для добавления пользователя */}
+            <Button type="primary" style={{ marginLeft: 8 }} onClick={openAddMemberModal}>Добавить пользователя</Button>
+                    <AddMemberModal
+                        visible={isAddMemberVisible}
+                        onCancel={closeAddMemberModal}
+                        projectId={projectId}
+                        refreshProject={refreshProject} // Обновление данных после добавления
+                    />
+
             {/* Список модулей проекта */}
-            <ModuleList modules={modules} projectId={id} refreshModules={refreshModules} />
+            <ModuleList modules={modules} projectId={projectId} refreshModules={refreshModules} />
 
         
             {/* Ссылка на страницу создания модуля для данного проекта */}
@@ -73,7 +97,7 @@ const ProjectDetailsPage = () => {
                 visible={isModalVisible}
                 onCancel={closeModal}
                 onOk={closeModal}
-                projectId={id}
+                projectId={projectId}
             />
             
       </Content>
