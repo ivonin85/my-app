@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Form, Input, Select, Button, message } from 'antd';
 import axios from 'axios';
-import Navbar from '../../components/Navbar';
 import ModuleService from '../../services/ModuleService';
 import TagService from '../../services/TagService';
 
@@ -12,35 +12,45 @@ const CreateTestPlan = () => {
     const [tags, setTags] = useState([]);
     const [selectedModules, setSelectedModules] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
+    const navigate = useNavigate();
+
+    const location = useLocation();
+    const { projectId } = location.state || {};
 
     useEffect(() => {
-        // Загрузка модулей и тегов из API
+        // Загружаем модули и теги, используя переданный projectId
         const fetchModulesAndTags = async () => {
             try {
-                const modulesResponse = await ModuleService.getModulesByProjectId(149); // Дождаться ответа
-                const tagsResponse = await TagService.getAllTags(); // Дождаться ответа
-                setModules(modulesResponse.data || []); // Проверка на наличие данных
-                setTags(tagsResponse.data || []); // Проверка на наличие данных
+                if (projectId) {
+                    const modulesResponse = await ModuleService.getModulesByProjectId(projectId);
+                    const tagsResponse = await TagService.getAllTags();
+                    setModules(modulesResponse.data || []);
+                    setTags(tagsResponse.data || []);
+                }
             } catch (error) {
                 message.error('Ошибка загрузки данных');
             }
         };
 
         fetchModulesAndTags();
-    }, []);
+    }, [projectId]);
 
     const onFinish = async (values) => {
         const { name } = values;
 
         try {
-            const response = await axios.post('http://localhost:8080/api/testplan/create', {
-                name,
-                moduleIds: selectedModules,
-                tagIds: selectedTags,
-            }, { withCredentials: true });
+            await axios.post(
+                'http://localhost:8080/api/testplan/create',
+                {
+                    name,
+                    projectId,
+                    moduleIds: selectedModules,
+                    tagIds: selectedTags,
+                },
+                { withCredentials: true }
+            );
             message.success('Тест-план успешно создан');
-            console.log(response.data);
-            // Очистка формы или дополнительная логика
+            navigate(`/projects/${projectId}`);
         } catch (error) {
             message.error('Ошибка при создании тест-плана');
         }
@@ -63,7 +73,7 @@ const CreateTestPlan = () => {
                     value={selectedModules}
                     onChange={setSelectedModules}
                 >
-                    {modules.map(module => (
+                    {modules.map((module) => (
                         <Option key={module.id} value={module.id}>
                             {module.name}
                         </Option>
@@ -78,7 +88,7 @@ const CreateTestPlan = () => {
                     value={selectedTags}
                     onChange={setSelectedTags}
                 >
-                    {tags.map(tag => (
+                    {tags.map((tag) => (
                         <Option key={tag.id} value={tag.id}>
                             {tag.name}
                         </Option>

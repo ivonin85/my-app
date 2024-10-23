@@ -35,13 +35,6 @@ const ProjectDetailsPage = () => {
         refreshProject();
     }, [projectId]);
 
-    //useEffect(() => {
-    //   ProjectService.getProjectById(projectId)
-    //       .then(response => setProject(response.data))
-    //        .catch(error => console.error('Ошибка при загрузке проекта', error));
-    //}, [projectId]);
-
-
     useEffect(() => {
         ModuleService.getModulesByProjectId(projectId)
             .then(response => setModules(response.data))
@@ -54,6 +47,16 @@ const ProjectDetailsPage = () => {
 
     const handleEditClick = () => {
         navigate(`/projects/${projectId}/edit`);
+    };
+
+    // Новая функция для перенаправления на страницу тест-планов
+    const handleTestPlansClick = () => {
+        navigate(`/test_plans`, { state: { projectId } }); 
+    };
+
+    // Новая функция для перенаправления на страницу тест-планов
+    const handleCreateTestPlanClick = () => {
+        navigate(`/create_test_plan`, { state: { projectId } }); 
     };
 
     // Обновляем список модулей после удаления
@@ -85,6 +88,12 @@ const ProjectDetailsPage = () => {
                         projectId={projectId}
                         refreshProject={refreshProject} // Обновление данных после добавления
                     />
+
+            {/* Кнопка для перехода на страницу тест-планов */}
+            <Button type="primary" style={{ marginLeft: 8 }} onClick={handleTestPlansClick}>Перейти к тест-планам</Button>
+
+            {/* Кнопка для перехода на страницу создания тест-плана */}
+            <Button type="primary" style={{ marginLeft: 8 }} onClick={handleCreateTestPlanClick}>Перейти к создания тест-плана</Button>
 
             {/* Список модулей проекта */}
             <ModuleList modules={modules} projectId={projectId} refreshModules={refreshModules} />

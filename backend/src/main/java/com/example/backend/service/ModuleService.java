@@ -19,7 +19,6 @@ public class ModuleService {
     private final ModuleRepository moduleRepository;
     private final ProjectRepository projectRepository;
 
-    // Инициализация через конструктор с использованием @Autowired
     @Autowired
     public ModuleService(ModuleRepository moduleRepository, ProjectRepository projectRepository) {
         this.moduleRepository = moduleRepository;

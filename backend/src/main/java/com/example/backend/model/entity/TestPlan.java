@@ -37,6 +37,8 @@ public class TestPlan {
     )
     private List<TestCase> testCases;
 
+    private Long projectId;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
