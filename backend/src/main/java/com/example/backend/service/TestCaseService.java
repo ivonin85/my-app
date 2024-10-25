@@ -97,6 +97,9 @@ public class TestCaseService {
                         .orElseGet(() -> {
                             Tag newTag = new Tag();
                             newTag.setName(tagName);
+                            Project project = new Project();
+                            project.setId(dto.getProjectId());
+                            newTag.setProject(project);
                             return tagRepository.save(newTag); // Сохраняем тег перед присвоением
                         }))
                 .collect(Collectors.toList());

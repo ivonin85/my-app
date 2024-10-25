@@ -16,6 +16,10 @@ public class Tag {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = true) // временно позволяем null
+    private Project project;
+
     @ManyToMany(mappedBy = "tags")
     private List<TestCase> testCases;
 

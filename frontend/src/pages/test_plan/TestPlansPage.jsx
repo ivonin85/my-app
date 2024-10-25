@@ -30,20 +30,6 @@ const TestPlansPage = () => {
     }
   };
 
-  // Функция для создания нового тест-плана
-  const handleCreateTestPlan = async (values) => {
-    try {
-      await axios.post('http://localhost:8080/api/testplan', { ...values, projectId });
-      message.success('Test plan created successfully');
-      fetchTestPlans();
-      setIsModalOpen(false);
-      form.resetFields();
-    } catch (error) {
-      console.error('Error creating test plan:', error);
-      message.error('Failed to create test plan');
-    }
-  };
-
   const columns = [
     {
       title: 'ID',
@@ -65,9 +51,6 @@ const TestPlansPage = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={() => setIsModalOpen(true)}>
-        Create Test Plan
-      </Button>
       
       {/* Добавление индикатора загрузки */}
       <Table 
@@ -77,24 +60,6 @@ const TestPlansPage = () => {
         loading={loading} 
       />
 
-      <Modal
-        title="Create Test Plan"
-        open={isModalOpen}  // Ant Design 4.x -> 5.x: visible заменен на open
-        onCancel={() => setIsModalOpen(false)}
-        footer={null}
-      >
-        <Form form={form} onFinish={handleCreateTestPlan}>
-          <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please enter the name of the test plan!' }]}>
-            <Input />
-          </Form.Item>
-          {/* Добавьте поля для moduleIds и tagIds, если нужно */}
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Create
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
     </div>
   );
 };

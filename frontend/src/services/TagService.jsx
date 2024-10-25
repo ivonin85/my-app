@@ -6,8 +6,8 @@ const getAllTags = () => {
     return axios.get(API_URL, { withCredentials: true });
 };
 
-const createTag = (tag) => {
-    return axios.post(API_URL, tag, { withCredentials: true });
+const createTag = (tag, projectId) => {
+    return axios.post(API_URL, { name: tag, projectId }, { withCredentials: true });
 };
 
 const getTagsByTestCaseId = (testCaseId) => {

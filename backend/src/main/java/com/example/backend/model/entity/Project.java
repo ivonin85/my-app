@@ -40,6 +40,9 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Module> modules;
 
+    @OneToMany(mappedBy = "project")
+    private List<Tag> tags;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

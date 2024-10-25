@@ -73,7 +73,11 @@ const ProjectDetailsPage = () => {
                 <Sider style={{background: 'transparent', padding: 0, width: 256, borderRight: '1px solid #f0f0f0',}}>
                     <Sidebar projectId={projectId} />
                 </Sider>
-                <Content style={{ paddingTop: '45px', padding: '24px', background: '#fff', minHeight: '100vh' }}>
+                <Content style={{  
+                    padding: '24px', 
+                    background: '#fff', 
+                    minHeight: '100vh',
+                    paddingTop: '100px' }}>
                     <h1>{project.title}</h1>
                     <p>{project.description}</p>
             
@@ -81,7 +85,7 @@ const ProjectDetailsPage = () => {
             <Button type="dashed" onClick={handleEditClick}>Редактировать проект</Button>
 
             {/* Кнопка для добавления пользователя */}
-            <Button type="primary" style={{ marginLeft: 8 }} onClick={openAddMemberModal}>Добавить пользователя</Button>
+            <Button type="primary" style={{ marginLeft: 8 }} onClick={openAddMemberModal}>Добавить пользователя в проект </Button>
                     <AddMemberModal
                         visible={isAddMemberVisible}
                         onCancel={closeAddMemberModal}
@@ -93,7 +97,7 @@ const ProjectDetailsPage = () => {
             <Button type="primary" style={{ marginLeft: 8 }} onClick={handleTestPlansClick}>Перейти к тест-планам</Button>
 
             {/* Кнопка для перехода на страницу создания тест-плана */}
-            <Button type="primary" style={{ marginLeft: 8 }} onClick={handleCreateTestPlanClick}>Перейти к создания тест-плана</Button>
+            <Button type="primary" style={{ marginLeft: 8 }} onClick={handleCreateTestPlanClick}>Создать тест-план</Button>
 
             {/* Список модулей проекта */}
             <ModuleList modules={modules} projectId={projectId} refreshModules={refreshModules} />

@@ -52,7 +52,7 @@ const ModuleDetailsPage = () => {
 
     return (
         <div>
-            <Navbar />
+            <div><Navbar /></div>
             <Layout style={{ marginLeft: 48 }}>
                 <Sider>
                     <Sidebar projectId={projectId} />

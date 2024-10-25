@@ -247,6 +247,7 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
                                 value={tagNames}
                                 onChange={handleTagChange}
                                 allTags={allTags}
+                                projectId={projectId}
                             />
                         </Card>
                     </Col>
