@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.model.dto.TestCaseDTO;
 import com.example.backend.model.dto.TestPlanDTO;
 import com.example.backend.model.entity.TestPlan;
 import com.example.backend.service.TestPlanService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/testplan")
@@ -34,5 +36,12 @@ public class TestPlanController {
         List<TestPlanDTO> testPlans = testPlanService.getTestPlansByProjectId(projectId);
         return new ResponseEntity<>(testPlans, HttpStatus.OK);
     }
+
+    @GetMapping("/{testPlanId}/testcases")
+    public ResponseEntity<Map<String, Map<String, List<TestCaseDTO>>>> getTestCasesByTestPlan(@PathVariable Long testPlanId) {
+        Map<String, Map<String, List<TestCaseDTO>>> testCasesGroupedByModuleAndTag = testPlanService.getTestCasesGroupedByModuleAndTag(testPlanId);
+        return new ResponseEntity<>(testCasesGroupedByModuleAndTag, HttpStatus.OK);
+    }
+
 }
 

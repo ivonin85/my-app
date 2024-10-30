@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Table, Button, Modal, Form, Input, message } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { Table, message, Layout } from 'antd';
+import { useLocation, useNavigate } from 'react-router-dom';
+import TestPlanService from '../../services/TestPlanService';
+import Navbar from '../../components/Navbar';
 
 const TestPlansPage = () => {
   const [testPlans, setTestPlans] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
   const location = useLocation();
   const { projectId } = location.state || {};
+  const navigate = useNavigate(); // Используем navigate для перенаправления
+  const { Content } = Layout; 
 
   useEffect(() => {
     if (projectId) {
@@ -20,14 +21,17 @@ const TestPlansPage = () => {
   const fetchTestPlans = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8080/api/testplan/project/${projectId}`, { withCredentials: true });
-      setTestPlans(response.data);
+      const data = await TestPlanService.getTestPlans(projectId);
+      setTestPlans(data);
     } catch (error) {
-      console.error('Error fetching test plans:', error);
-      message.error('Failed to load test plans');
+      message.error(error.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRowClick = (record) => {
+    navigate(`/testplan_details`, { state: { testPlanId: record.id } }); // Передаем testPlanId
   };
 
   const columns = [
@@ -45,21 +49,24 @@ const TestPlansPage = () => {
       title: 'Created At',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (date) => new Date(date).toLocaleString(), // Форматирование даты
+      render: (date) => new Date(date).toLocaleString(),
     },
   ];
 
   return (
-    <div>
-      
+    <div><div><Navbar /></div>
+    <Content style={{ padding: '24px', background: '#fff', minHeight: '100vh', paddingTop: '120px' }}>
       {/* Добавление индикатора загрузки */}
       <Table 
         dataSource={Array.isArray(testPlans) ? testPlans : []} 
         columns={columns} 
         rowKey="id" 
-        loading={loading} 
+        loading={loading}
+        onRow={(record) => ({
+          onClick: () => handleRowClick(record),
+        })}
       />
-
+      </Content>
     </div>
   );
 };
