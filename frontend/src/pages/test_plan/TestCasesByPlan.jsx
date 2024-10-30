@@ -38,9 +38,11 @@ const TestCasesByPlan = () => {
         { title: 'Статус', dataIndex: 'status', key: 'status' }
     ];
 
+    const contentStyle = {padding: '24px', background: '#fff', minHeight: '100vh', paddingTop: '120px'};
+
     return (
         <div><div><Navbar /></div>
-        <Content style={{ padding: '24px', background: '#fff', minHeight: '100vh', paddingTop: '120px' }}>  
+        <Content style={contentStyle}>  
             {Object.keys(testCasesByModuleAndTag).map(moduleName => (
                 <Collapse key={moduleName}>
                     <Panel header={moduleName}>

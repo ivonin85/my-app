@@ -19,7 +19,7 @@ const ModuleDetailsPage = () => {
     const [shouldReload, setShouldReload] = useState(false);
     const openModal = () => setIsModalVisible(true);
     const closeModal = () => setIsModalVisible(false);
-    const { Sider, Content } = Layout; 
+    const { Sider, Content } = Layout;
     const [drawerVisible, setDrawerVisible] = useState(false);
 
     useEffect(() => {
@@ -36,7 +36,7 @@ const ModuleDetailsPage = () => {
     }, [moduleId]);
 
     const openDrawer = () => setDrawerVisible(true);
-    
+
     const closeDrawer = () => {
         setDrawerVisible(false);
     };
@@ -50,6 +50,8 @@ const ModuleDetailsPage = () => {
         return <p>Загрузка...</p>;
     }
 
+    const contentStyle = { padding: '24px', background: '#fff', minHeight: '100vh', paddingTop: '100px' };
+
     return (
         <div>
             <div><Navbar /></div>
@@ -57,12 +59,7 @@ const ModuleDetailsPage = () => {
                 <Sider>
                     <Sidebar projectId={projectId} />
                 </Sider>
-                <Content style={{ 
-                    padding: '24px', 
-                    background: '#fff', 
-                    minHeight: '100vh', 
-                    paddingTop: '100px',
-                    }}>
+                <Content style={contentStyle}>
                     <h1>{module.name}</h1>
                     <Button type="primary" onClick={openModal} style={{ marginRight: '8px' }}>
                         Редактировать модуль
@@ -70,7 +67,7 @@ const ModuleDetailsPage = () => {
                     <Button type="dashed" onClick={() => moduleDelete(module.id)}>
                         Удалить
                     </Button>
-                    
+
                     <ModuleFormModal
                         visible={isModalVisible}
                         onCancel={closeModal}
@@ -91,7 +88,7 @@ const ModuleDetailsPage = () => {
                         moduleId={moduleId}
                         onUpdate={handleTestCaseUpdate} // Передаем функцию обновления
                     />
-                    
+
                     <Title level={2}>Список тест-кейсов</Title>
 
                     {/* Передаем состояние shouldReload в TestCaseList */}
@@ -102,7 +99,7 @@ const ModuleDetailsPage = () => {
                         overflowY: 'auto', // Включение вертикальной прокрутки
                         position: 'fixed'
                     }}>
-                    <TestCaseList shouldReload={shouldReload} />
+                        <TestCaseList shouldReload={shouldReload} />
                     </div>
                 </Content>
             </Layout>
