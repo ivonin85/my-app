@@ -67,12 +67,13 @@ const ProjectDetailsPage = () => {
     };
 
     const contentStyle = { padding: '24px', background: '#fff', minHeight: '100vh', paddingTop: '100px' };
+    const siderStyle = { background: 'transparent', padding: 0, width: 256, borderRight: '1px solid #f0f0f0', };
 
     return (
         <div>
             <div><Navbar /></div>
             <Layout style={{ marginLeft: 48 }}>
-                <Sider style={{ background: 'transparent', padding: 0, width: 256, borderRight: '1px solid #f0f0f0', }}>
+                <Sider style={siderStyle}>
                     <Sidebar projectId={projectId} />
                 </Sider>
                 <Content style={contentStyle}>
