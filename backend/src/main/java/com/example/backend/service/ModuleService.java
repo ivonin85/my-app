@@ -43,7 +43,7 @@ public class ModuleService {
     public ModuleDTO createModule(ModuleDTO moduleDTO) {
         // Получаем проект по projectId
         Project project = projectRepository.findById(moduleDTO.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new RuntimeException("Проект не найден"));
 
         // Создаем новый модуль
         Module module = new Module();

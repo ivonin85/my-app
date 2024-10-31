@@ -12,6 +12,7 @@ public interface ModuleMapper {
     ModuleMapper INSTANCE = Mappers.getMapper(ModuleMapper.class);
 
     @Mapping(source = "parent.id", target = "parentId")
+    @Mapping(source = "project.id", target = "projectId")
     ModuleDTO moduleToModuleDTO(Module module);
 
 }

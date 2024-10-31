@@ -40,7 +40,7 @@ const ModuleFormModal = ({ visible, onCancel, onOk, projectId, moduleId }) => {
         form
             .validateFields()
             .then(values => {
-                const moduleData = { ...values, projectId };
+                const moduleData = { ...values, projectId: Number(projectId) };;
                 if (isEditMode) {
                     // Обновляем модуль
                     moduleUpdate(moduleId, moduleData);
