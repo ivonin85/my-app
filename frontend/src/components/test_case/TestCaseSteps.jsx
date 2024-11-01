@@ -30,17 +30,16 @@ const TestCaseSteps = ({ steps, onStepChange, onAddStep, onRemoveStep }) => {
         steps.forEach((_, index) => syncHeight(index));
     }, [steps]);
 
+    const cardStyles = {
+        marginBottom: '24px',
+        backgroundColor: '#ffffff',
+        border: '2px dashed #d9d9d9',
+        padding: '16px',
+    };
+    
+
     return (
-        <Card
-            title="Шаги тест-кейса"
-            bordered={true}
-            style={{
-                marginBottom: '24px',
-                backgroundColor: '#ffffff',
-                border: '2px dashed #d9d9d9',
-                padding: '16px',
-            }}
-        >
+        <Card title="Шаги тест-кейса" bordered={true} style={cardStyles}>
             {steps.map((step, index) => (
                 <Row key={index} gutter={16} align="middle" style={{ marginBottom: '16px' }}>
                     <Col span={1} style={{ paddingRight: '5px' }}>
