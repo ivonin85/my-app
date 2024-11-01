@@ -7,6 +7,7 @@ import TagService from '../../services/TagService';
 import ProfileService from '../../services/ProfileService';
 import TestCaseSteps from '../../components/test_case/TestCaseSteps';
 import TagSelect from '../../components/test_case/TagSelect';
+import TestCaseUrlDisplay from '../../components/test_case/TestCaseUrlDisplay';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -90,15 +91,6 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
         setSteps(steps.filter((_, i) => i !== index));
     };
 
-    const handleCopyUrl = () => {
-        const testCaseUrl = `${window.location.origin}/testcases/${testCaseId}`;
-        navigator.clipboard.writeText(testCaseUrl).then(() => {
-            message.success('URL тест-кейса скопирован в буфер обмена!');
-        }).catch(() => {
-            message.error('Не удалось скопировать URL.');
-        });
-    };
-
     const handleSubmit = () => {
         const testCaseData = {
             title,
@@ -134,7 +126,6 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
     };
 
 
-
     return (
         <div>
         
@@ -146,23 +137,10 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
                 width="95%"
             >
                 <Form onFinish={handleSubmit} layout="vertical">
-                {testCaseId && (
-            <Row align="middle" style={{ marginBottom: '16px' }}>
-                <Col>
-                    <Text strong style={{ fontSize: '16px', marginRight: '8px' }}>
-                        URL тест-кейса:
-                    </Text>
-                </Col>
-                <Col>
-                    <Input
-                        value={`${window.location.origin}/testcases/${testCaseId}`}
-                        readOnly
-                        style={{ width: '300px'}}
-                        addonAfter={<CopyOutlined onClick={handleCopyUrl} style={{ cursor: 'pointer' }} />}
-                    />
-                </Col>
-            </Row>
-        )}
+
+                {/* Отображение URL тест-кейса */}
+                {testCaseId && <TestCaseUrlDisplay testCaseId={testCaseId} />}
+
                 <Row gutter={24}>
                     {/* Левая часть */}
                     <Col span={16}>
@@ -185,12 +163,7 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
                         </Card>
 
                         {/* Шаги тест-кейса */}
-                        <TestCaseSteps
-                            steps={steps}
-                            onStepChange={handleStepChange}
-                            onAddStep={addStep}
-                            onRemoveStep={removeStep}
-                        />
+                        <TestCaseSteps steps={steps} onStepChange={handleStepChange} onAddStep={addStep} onRemoveStep={removeStep} />
                     </Col>
 
                     {/* Правая часть */}
@@ -243,12 +216,7 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
                             </Form.Item>
 
                             {/* Теги тест-кейса */}
-                            <TagSelect
-                                value={tagNames}
-                                onChange={handleTagChange}
-                                allTags={allTags}
-                                projectId={projectId}
-                            />
+                            <TagSelect value={tagNames} onChange={handleTagChange} allTags={allTags} projectId={projectId} />
                         </Card>
                     </Col>
                 </Row>
