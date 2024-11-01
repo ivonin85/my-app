@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
-import { Form, Input, Select, Button, Typography, Row, Col, Card, message, Drawer } from 'antd';
-import { CopyOutlined } from '@ant-design/icons';
+import { Form, Button, Row, Col, Card, Drawer } from 'antd';
 import TestCaseService from '../../services/TestCaseService';
 import TagService from '../../services/TagService';
 import ProfileService from '../../services/ProfileService';
@@ -9,9 +8,7 @@ import TestCaseSteps from '../../components/test_case/TestCaseSteps';
 import TagSelect from '../../components/test_case/TagSelect';
 import TestCaseUrlDisplay from '../../components/test_case/TestCaseUrlDisplay';
 import TestCaseMainInfo from '../../components/test_case/TestCaseMainInfo';
-
-const { TextArea } = Input;
-const { Title, Text } = Typography;
+import TestCaseAdditionalInfo from '../../components/test_case/TestCaseAdditionalInfo';
 
 const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, moduleId, testCaseId, onUpdate }) => {
     const location = useLocation();
@@ -137,57 +134,24 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
 
                     {/* Шаги тест-кейса */}
                     <TestCaseSteps steps={steps} setSteps={setSteps} />
-
                     </Col>
 
                     {/* Правая часть */}
                     <Col span={8}>
                         <Card title="Дополнительная информация" bordered={true} style={{ marginBottom: '24px' }}>
-                            <Form.Item label="Описание" required>
-                                <TextArea
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Введите описание"
-                                    rows={3}
-                                />
-                            </Form.Item>
-                            <Row gutter={16}>
-                                <Col span={24}>
-                                    <Form.Item label="Приоритет">
-                                        <Select value={priority} onChange={setPriority}>
-                                            <Select.Option value="Высокий">Высокий</Select.Option>
-                                            <Select.Option value="Средний">Средний</Select.Option>
-                                            <Select.Option value="Низкий">Низкий</Select.Option>
-                                        </Select>
-                                    </Form.Item>
-                                </Col>
-                                <Col span={24}>
-                                    <Form.Item label="Серьезность">
-                                        <Select value={severity} onChange={setSeverity}>
-                                            <Select.Option value="Критическая">Критическая</Select.Option>
-                                            <Select.Option value="Серьезная">Серьезная</Select.Option>
-                                            <Select.Option value="Незначительная">Незначительная</Select.Option>
-                                        </Select>
-                                    </Form.Item>
-                                </Col>
-                                <Col span={24}>
-                                    <Form.Item label="Статус">
-                                        <Select value={status} onChange={setStatus}>
-                                            <Select.Option value="Готов">Готов</Select.Option>
-                                            <Select.Option value="Не готов">Не готов</Select.Option>
-                                            <Select.Option value="На редактировании">На редактировании</Select.Option>
-                                            <Select.Option value="Необходимо актуализировать">Необходимо актуализировать</Select.Option>
-                                        </Select>
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                            <Form.Item label="Требования">
-                                <TextArea
-                                    value={requirements}
-                                    onChange={(e) => setRequirements(e.target.value)}
-                                    placeholder="Введите требования"
-                                />
-                            </Form.Item>
+                             {/* Блокс дополнительной информацией тест-кейса */}
+                            <TestCaseAdditionalInfo
+                                description={description}
+                                setDescription={setDescription}
+                                priority={priority}
+                                setPriority={setPriority}
+                                severity={severity}
+                                setSeverity={setSeverity}
+                                status={status}
+                                setStatus={setStatus}
+                                requirements={requirements}
+                                setRequirements={setRequirements}
+                            />
 
                             {/* Теги тест-кейса */}
                             <TagSelect value={tagNames} onChange={handleTagChange} allTags={allTags} projectId={projectId} />
