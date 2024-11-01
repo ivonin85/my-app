@@ -4,7 +4,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 
-const TestCaseSteps = ({ steps, onStepChange, onAddStep, onRemoveStep }) => {
+const TestCaseSteps = ({ steps, setSteps }) => {
     const actionRefs = useRef([]);
     const expectedRefs = useRef([]);
 
@@ -30,16 +30,16 @@ const TestCaseSteps = ({ steps, onStepChange, onAddStep, onRemoveStep }) => {
         steps.forEach((_, index) => syncHeight(index));
     }, [steps]);
 
-    const cardStyles = {
-        marginBottom: '24px',
-        backgroundColor: '#ffffff',
-        border: '2px dashed #d9d9d9',
-        padding: '16px',
+    const addStep = () => {
+        setSteps([...steps, { action: '', expectedResult: '' }]);
     };
-    
+
+    const removeStep = (index) => {
+        setSteps(steps.filter((_, i) => i !== index));
+    };
 
     return (
-        <Card title="Шаги тест-кейса" bordered={true} style={cardStyles}>
+        <Card title="Шаги тест-кейса" bordered={true} style={{ marginBottom: '24px' }}>
             {steps.map((step, index) => (
                 <Row key={index} gutter={16} align="middle" style={{ marginBottom: '16px' }}>
                     <Col span={1} style={{ paddingRight: '5px' }}>
@@ -51,7 +51,9 @@ const TestCaseSteps = ({ steps, onStepChange, onAddStep, onRemoveStep }) => {
                             placeholder="Действие"
                             value={step.action}
                             onChange={(e) => {
-                                onStepChange(index, 'action', e.target.value);
+                                const newSteps = [...steps];
+                                newSteps[index].action = e.target.value;
+                                setSteps(newSteps);
                                 syncHeight(index);
                             }}
                             style={{ width: '100%' }}
@@ -64,7 +66,9 @@ const TestCaseSteps = ({ steps, onStepChange, onAddStep, onRemoveStep }) => {
                             placeholder="Ожидаемый результат"
                             value={step.expectedResult}
                             onChange={(e) => {
-                                onStepChange(index, 'expectedResult', e.target.value);
+                                const newSteps = [...steps];
+                                newSteps[index].expectedResult = e.target.value;
+                                setSteps(newSteps);
                                 syncHeight(index);
                             }}
                             style={{ width: '100%' }}
@@ -72,11 +76,11 @@ const TestCaseSteps = ({ steps, onStepChange, onAddStep, onRemoveStep }) => {
                         />
                     </Col>
                     <Col span={1} style={{ paddingLeft: '5px' }}>
-                        <Button type="link" icon={<DeleteOutlined />} onClick={() => onRemoveStep(index)} />
+                        <Button type="link" icon={<DeleteOutlined />} onClick={() => removeStep(index)} />
                     </Col>
                 </Row>
             ))}
-            <Button type="dashed" onClick={onAddStep} style={{ marginTop: '16px' }}>
+            <Button type="dashed" onClick={addStep} style={{ marginTop: '16px' }}>
                 Добавить шаг
             </Button>
         </Card>

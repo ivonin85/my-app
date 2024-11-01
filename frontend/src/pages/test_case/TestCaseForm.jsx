@@ -8,6 +8,7 @@ import ProfileService from '../../services/ProfileService';
 import TestCaseSteps from '../../components/test_case/TestCaseSteps';
 import TagSelect from '../../components/test_case/TagSelect';
 import TestCaseUrlDisplay from '../../components/test_case/TestCaseUrlDisplay';
+import TestCaseMainInfo from '../../components/test_case/TestCaseMainInfo';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -77,20 +78,6 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
         setTagIds(selectedTagObjects.map(tag => tag.id));
     };
 
-    const handleStepChange = (index, field, value) => {
-        const newSteps = [...steps];
-        newSteps[index][field] = value;
-        setSteps(newSteps);
-    };
-
-    const addStep = () => {
-        setSteps([...steps, { action: '', expectedResult: '' }]);
-    };
-
-    const removeStep = (index) => {
-        setSteps(steps.filter((_, i) => i !== index));
-    };
-
     const handleSubmit = () => {
         const testCaseData = {
             title,
@@ -144,26 +131,13 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
                 <Row gutter={24}>
                     {/* Левая часть */}
                     <Col span={16}>
-                        <Card title="Основная информация" bordered={true} style={{ marginBottom: '24px' }}>
-                            <Form.Item label="Заголовок" required>
-                                <Input
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="Введите заголовок"
-                                />
-                            </Form.Item>
-                            <Form.Item label="Предусловия">
-                                <TextArea
-                                    value={preconditions}
-                                    onChange={(e) => setPreconditions(e.target.value)}
-                                    placeholder="Введите предусловия"
-                                    rows={3}
-                                />
-                            </Form.Item>
-                        </Card>
+                    
+                    {/* Основная информация тест-кейса */}
+                    <TestCaseMainInfo title={title} setTitle={setTitle} preconditions={preconditions} setPreconditions={setPreconditions} />
 
-                        {/* Шаги тест-кейса */}
-                        <TestCaseSteps steps={steps} onStepChange={handleStepChange} onAddStep={addStep} onRemoveStep={removeStep} />
+                    {/* Шаги тест-кейса */}
+                    <TestCaseSteps steps={steps} setSteps={setSteps} />
+
                     </Col>
 
                     {/* Правая часть */}
