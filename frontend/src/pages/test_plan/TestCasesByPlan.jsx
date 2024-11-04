@@ -11,6 +11,7 @@ const TestCasesByPlan = () => {
     const { testPlanId } = location.state || {};
     const [testCasesByModuleAndTag, setTestCasesByModuleAndTag] = useState({});
     const [loading, setLoading] = useState(false);
+    const [testPlanDetails, setTestPlanDetails] = useState({});
     const { Content } = Layout; 
 
     useEffect(() => {
@@ -29,6 +30,21 @@ const TestCasesByPlan = () => {
         fetchTestCases();
     }, [testPlanId]);
 
+    useEffect(() => {
+        const fetchTestPlanDetails = async () => {
+            try {
+                const details = await TestPlanService.getTestPlanById(testPlanId);
+                setTestPlanDetails(details);
+            } catch (error) {
+                message.error('Не удалось загрузить детали тест-плана');
+            }
+        };
+
+        if (testPlanId) {
+            fetchTestPlanDetails();
+        }
+    }, [testPlanId]);
+
     if (loading) return <Spin />;
 
     const columns = [
@@ -43,6 +59,7 @@ const TestCasesByPlan = () => {
     return (
         <div><div><Navbar /></div>
         <Content style={contentStyle}>  
+        <h2>{testPlanDetails.name || 'Тест-план'}</h2>
             {Object.keys(testCasesByModuleAndTag).map(moduleName => (
                 <Collapse key={moduleName}>
                     <Panel header={moduleName}>

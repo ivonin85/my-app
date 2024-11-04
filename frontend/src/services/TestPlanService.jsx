@@ -22,8 +22,19 @@ const getTestPlans = async (projectId) => {
     }
   };
 
+  const getTestPlanById = async (testPlanId) => {
+    try {
+      const response = await axios.get(`${API_URL}/${testPlanId}`, { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      console.error('Не удалось загрузить тест-план:', error);
+      throw new Error('Не удалось загрузить тест-план');
+    }
+  };
+
 export default {
     getTestPlans,
-    getTestCases
+    getTestCases,
+    getTestPlanById
 
 };
