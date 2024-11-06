@@ -23,10 +23,9 @@ public class TestRunService {
     @Autowired
     private TestResultRepository testResultRepository;
 
-    // Метод создания нового тест-рана, возвращающий TestRunDTO
-    public TestRunDTO createTestRun(Long testPlanId) {
+    public TestRunDTO createTestRun(Long testPlanId, String testRunName) {
         TestRun testRun = new TestRun();
-        testRun.setName(String.valueOf(testPlanId));
+        testRun.setName(testRunName);
         testRun.setTestPlan(new TestPlan());
         testRun.getTestPlan().setId(testPlanId);
 
@@ -34,7 +33,6 @@ public class TestRunService {
         return toTestRunDTO(savedTestRun);
     }
 
-    // Метод завершения тест-рана, возвращающий TestRunDTO
     public TestRunDTO completeTestRun(Long testRunId) {
         TestRun testRun = testRunRepository.findById(testRunId)
                 .orElseThrow(() -> new RuntimeException("TestRun not found"));
@@ -43,7 +41,6 @@ public class TestRunService {
         return toTestRunDTO(completedTestRun);
     }
 
-    // Метод сохранения результата тест-кейса в рамках тест-рана, возвращающий TestResultDTO
     public TestResultDTO saveTestResult(Long testRunId, Long testCaseId, String status, String comments) {
         TestRun testRun = testRunRepository.findById(testRunId)
                 .orElseThrow(() -> new RuntimeException("TestRun not found"));
@@ -58,7 +55,6 @@ public class TestRunService {
         return toTestResultDTO(savedTestResult);
     }
 
-    // Метод для получения всех результатов тест-рана, возвращающий список TestResultDTO
     public List<TestResultDTO> getTestResultsByTestRun(Long testRunId) {
         List<TestResult> testResults = testResultRepository.findByTestRunId(testRunId);
         return testResults.stream()
@@ -66,16 +62,24 @@ public class TestRunService {
                 .collect(Collectors.toList());
     }
 
-    // Маппинг TestRun в TestRunDTO
     private TestRunDTO toTestRunDTO(TestRun testRun) {
         TestRunDTO dto = new TestRunDTO();
         dto.setId(testRun.getId());
         dto.setTestPlanId(testRun.getTestPlan().getId());
 
+        List<TestResultDTO> testResultDTOs = testRun.getTestResults()
+                .stream()
+                .map(this::toTestResultDTO)
+                .collect(Collectors.toList());
+
+        dto.setTestResults(testResultDTOs);
+        dto.setCreatedAt(testRun.getCreatedAt());
+        dto.setUpdatedAt(testRun.getUpdatedAt());
+        dto.setName(testRun.getName());
+
         return dto;
     }
-
-    // Маппинг TestResult в TestResultDTO
+    
     private TestResultDTO toTestResultDTO(TestResult testResult) {
         TestResultDTO dto = new TestResultDTO();
         dto.setId(testResult.getId());

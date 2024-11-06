@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Collapse, Spin, message, Layout } from 'antd';
+import { Table, Collapse, Spin, message, Layout, Button, Modal } from 'antd';
 import { useLocation } from 'react-router-dom';
 import TestPlanService from '../../services/TestPlanService';
+import TestRunService from '../../services/TestRunService';
 import Navbar from '../../components/Navbar';
 
 const { Panel } = Collapse;
@@ -12,6 +13,7 @@ const TestCasesByPlan = () => {
     const [testCasesByModuleAndTag, setTestCasesByModuleAndTag] = useState({});
     const [loading, setLoading] = useState(false);
     const [testPlanDetails, setTestPlanDetails] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { Content } = Layout; 
 
     useEffect(() => {
@@ -47,6 +49,17 @@ const TestCasesByPlan = () => {
 
     if (loading) return <Spin />;
 
+    const handleCreateTestRun = async () => {
+        const testRunName = `${testPlanDetails.name} - ${new Date().toLocaleDateString()}`;
+        try {
+            await TestRunService.createTestRun(testPlanId, testRunName);
+            message.success(`Тест-ран "${testRunName}" успешно создан`);
+            setIsModalOpen(false);
+        } catch (error) {
+            message.error('Не удалось создать тест-ран');
+        }
+    };
+
     const columns = [
         { title: 'ID', dataIndex: 'id', key: 'id' },
         { title: 'Название', dataIndex: 'title', key: 'title' },
@@ -60,6 +73,19 @@ const TestCasesByPlan = () => {
         <div><div><Navbar /></div>
         <Content style={contentStyle}>  
         <h2>{testPlanDetails.name || 'Тест-план'}</h2>
+        <Button style={{ marginBottom: '8px' }}type="primary" onClick={() => setIsModalOpen(true)}>
+                    Создать тест-ран
+                </Button>
+                <Modal
+                    title="Создание тест-рана"
+                    visible={isModalOpen}
+                    onOk={handleCreateTestRun}
+                    onCancel={() => setIsModalOpen(false)}
+                    okText="Создать"
+                    cancelText="Отмена"
+                >
+                    <p>Название тест-рана: {`${testPlanDetails.name} - ${new Date().toLocaleDateString()}`}</p>
+                </Modal>
             {Object.keys(testCasesByModuleAndTag).map(moduleName => (
                 <Collapse key={moduleName}>
                     <Panel header={moduleName}>

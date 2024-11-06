@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,7 +24,7 @@ public class TestRun {
     private TestPlan testPlan;
 
     @OneToMany(mappedBy = "testRun", cascade = CascadeType.ALL)
-    private List<TestResult> testResults;
+    private List<TestResult> testResults = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;

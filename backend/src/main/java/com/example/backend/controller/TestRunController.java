@@ -1,18 +1,14 @@
 package com.example.backend.controller;
 
-import com.example.backend.model.dto.TestPlanDTO;
 import com.example.backend.model.dto.TestResultDTO;
 import com.example.backend.model.dto.TestRunDTO;
-import com.example.backend.model.entity.TestResult;
-import com.example.backend.model.entity.TestRun;
-import com.example.backend.service.TestPlanService;
 import com.example.backend.service.TestResultService;
 import com.example.backend.service.TestRunService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/test-run")
@@ -25,8 +21,11 @@ public class TestRunController {
     private TestResultService testResultService;
 
     @PostMapping("/create/{testPlanId}")
-    public ResponseEntity<TestRunDTO> createTestRun(@PathVariable Long testPlanId) {
-        TestRunDTO testRunDTO = testRunService.createTestRun(testPlanId);
+    public ResponseEntity<TestRunDTO> createTestRun(
+            @PathVariable Long testPlanId,
+            @RequestBody Map<String, String> requestBody) {
+        String testRunName = requestBody.get("name");
+        TestRunDTO testRunDTO = testRunService.createTestRun(testPlanId, testRunName);
         return ResponseEntity.ok(testRunDTO);
     }
 
