@@ -32,9 +32,23 @@ const getTestPlans = async (projectId) => {
     }
   };
 
+  const createTestPlan = async (name, projectId, moduleIds, tagIds) => {
+    try {
+        await axios.post(
+            `${API_URL}/create`,
+            { name, projectId, moduleIds, tagIds },
+            { withCredentials: true }
+        );
+    } catch (error) {
+        console.error('Ошибка при создании тест-плана:', error);
+        throw new Error('Ошибка при создании тест-плана');
+    }
+};
+
 export default {
     getTestPlans,
     getTestCases,
-    getTestPlanById
+    getTestPlanById,
+    createTestPlan
 
 };

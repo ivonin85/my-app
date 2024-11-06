@@ -36,7 +36,7 @@ const ProjectsPage = () => {
                     {projects.map(project => (
                         <Col key={project.id} xs={24} sm={12} md={12} lg={8} xl={8}> {/* Два элемента в ряд на малых экранах */}
                             <Card
-                                title={project.title}
+                                title={<Link to={`/projects/${project.id}`}>{project.title}</Link>}
                                 extra={<Link to={`/projects/${project.id}`}>Подробнее</Link>}
                                 actions={[
                                     <Button type="primary" danger onClick={() => handleDelete(project.id)}>

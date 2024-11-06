@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { Form, Input, Select, Button, message } from 'antd';
-import axios from 'axios';
 import ModuleService from '../../services/ModuleService';
 import TagService from '../../services/TagService';
+import TestPlanService from '../../services/TestPlanService';
 
 const { Option } = Select;
 
-const CreateTestPlan = () => {
+const CreateTestPlanModal = ({ projectId, onTestPlanCreated }) => {
     const [modules, setModules] = useState([]);
     const [tags, setTags] = useState([]);
     const [selectedModules, setSelectedModules] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
-    const navigate = useNavigate();
-
-    const location = useLocation();
-    const { projectId } = location.state || {};
 
     useEffect(() => {
-        // Загружаем модули и теги, используя переданный projectId
         const fetchModulesAndTags = async () => {
             try {
                 if (projectId) {
@@ -39,20 +33,13 @@ const CreateTestPlan = () => {
         const { name } = values;
 
         try {
-            await axios.post(
-                'http://localhost:8080/api/testplan/create',
-                {
-                    name,
-                    projectId,
-                    moduleIds: selectedModules,
-                    tagIds: selectedTags,
-                },
-                { withCredentials: true }
-            );
+            await TestPlanService.createTestPlan(name, projectId, selectedModules, selectedTags);
             message.success('Тест-план успешно создан');
-            navigate(`/projects/${projectId}`);
+            if (onTestPlanCreated) {
+                onTestPlanCreated(); // уведомляем родительский компонент
+            }
         } catch (error) {
-            message.error('Ошибка при создании тест-плана');
+            message.error(error.message || 'Ошибка при создании тест-плана');
         }
     };
 
@@ -105,4 +92,4 @@ const CreateTestPlan = () => {
     );
 };
 
-export default CreateTestPlan;
+export default CreateTestPlanModal;

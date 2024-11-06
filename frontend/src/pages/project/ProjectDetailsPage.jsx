@@ -1,29 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Layout, Button, Tabs } from 'antd';
 import ModuleList from '../../components/ModuleList';
 import ModuleService from '../../services/ModuleService';
 import ProjectService from '../../services/ProjectService';
 import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
-import { Layout, Button } from 'antd';
 import ModuleFormModal from '../module/ModuleFormModal';
 import AddMemberModal from '../../components/project/AddMemberModal';
-
+import TestPlansTab from '../../components/project/TestPlansTab';
 
 const ProjectDetailsPage = () => {
-    const { projectId } = useParams(); // Получаем projectId проекта из URL
-    const navigate = useNavigate(); // Для навигации на страницу редактирования
+    const { projectId } = useParams();
+    const navigate = useNavigate();
     const [project, setProject] = useState(null);
-    const [modules, setModules] = useState([]); // Для хранения списка модулей
+    const [modules, setModules] = useState([]);
     const { Sider, Content } = Layout;
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const openModal = () => setIsModalVisible(true);
     const closeModal = () => setIsModalVisible(false);
 
-    const [isAddMemberVisible, setIsAddMemberVisible] = useState(false); // Для модального окна добавления пользователя
+    const [isAddMemberVisible, setIsAddMemberVisible] = useState(false);
     const openAddMemberModal = () => setIsAddMemberVisible(true);
     const closeAddMemberModal = () => setIsAddMemberVisible(false);
+
+    const [activeTabKey, setActiveTabKey] = useState("1");
 
     const refreshProject = () => {
         ProjectService.getProjectById(projectId)
@@ -49,74 +51,114 @@ const ProjectDetailsPage = () => {
         navigate(`/projects/${projectId}/edit`);
     };
 
-    // Новая функция для перенаправления на страницу тест-планов
+    const handleTabChange = (key) => {
+        setActiveTabKey(key);
+    };
+
     const handleTestPlansClick = () => {
-        navigate(`/test_plans`, { state: { projectId } });
+        navigate(`/test-plan-list`, { state: { projectId } });
     };
 
-    // Новая функция для перенаправления на страницу тест-планов
-    const handleCreateTestPlanClick = () => {
-        navigate(`/create_test_plan`, { state: { projectId } });
-    };
 
-    // Обновляем список модулей после удаления
     const refreshModules = () => {
         ModuleService.getModulesByProjectId(projectId)
             .then(response => setModules(response.data))
             .catch(error => console.error('Ошибка при обновлении модулей', error));
     };
 
-    const contentStyle = { padding: '24px', background: '#fff', minHeight: '100vh', paddingTop: '100px' };
-    const siderStyle = { background: 'transparent', padding: 0, width: 256, borderRight: '1px solid #f0f0f0', };
+    const contentStyle = { padding: '24px', background: '#fff', minHeight: '100vh', paddingTop: '110px' };
+    const siderStyle = { background: 'transparent', padding: 0, width: 256, borderRight: '1px solid #f0f0f0' };
+
+    const tabsStyle = {
+        tabStyle: {
+            padding: '8px 16px',
+            marginRight: '8px',
+            cursor: 'pointer',
+            fontWeight: 500,
+            color: '#595959',
+            border: '2px solid #d9d9d9'
+        },
+        activeTabStyle: {
+            padding: '8px 16px',
+            marginRight: '8px',
+            border: '1px solid #d9d9d9',
+            borderRadius: '4px',
+            backgroundColor: '#fff',
+            fontWeight: 600,
+            color: '#000',
+        },
+    };
 
     return (
         <div>
-            <div><Navbar /></div>
+            <Navbar />
             <Layout style={{ marginLeft: 48 }}>
                 <Sider style={siderStyle}>
                     <Sidebar projectId={projectId} />
                 </Sider>
                 <Content style={contentStyle}>
+                    <Tabs
+                        defaultActiveKey="1"
+                        tabBarGutter={16}
+                        tabBarStyle={{ display: 'flex', flexWrap: 'wrap' }}
+                    >
+                        <Tabs.TabPane
+                            tab={<div style={{ ...tabsStyle.tabStyle, ...(1 === "1" ? tabsStyle.activeTabStyle : {}) }}>О проекте</div>}
+                            key="1"
+                        >
+                            <h1>{project.title}</h1>
+                            <p>{project.description}</p>
+                            <Button type="dashed" onClick={handleEditClick}>Редактировать проект</Button>
+                        </Tabs.TabPane>
 
-                    <h1>{project.title}</h1>
-                    <p>{project.description}</p>
+                        <Tabs.TabPane
+                            tab={<div style={tabsStyle.tabStyle}>Пользователи</div>}
+                            key="2"
+                        >
+                            <Button type="primary" onClick={openAddMemberModal}>Добавить пользователя в проект</Button>
+                            <AddMemberModal
+                                visible={isAddMemberVisible}
+                                onCancel={closeAddMemberModal}
+                                projectId={projectId}
+                                refreshProject={refreshProject}
+                            />
+                        </Tabs.TabPane>
 
-                    {/* Кнопка для перехода на страницу редактирования */}
-                    <Button type="dashed" onClick={handleEditClick}>Редактировать проект</Button>
+                        <Tabs.TabPane
+                            tab={<div style={tabsStyle.tabStyle}>Тест-кейсы</div>}
+                            key="3"
+                        >
+                            <Button type="primary" onClick={openModal}>Создать модуль</Button>
+                            <ModuleFormModal
+                                visible={isModalVisible}
+                                onCancel={closeModal}
+                                onOk={closeModal}
+                                projectId={projectId}
+                            />
+                            <ModuleList modules={modules} projectId={projectId} refreshModules={refreshModules} />
+                        </Tabs.TabPane>
 
-                    {/* Кнопка для добавления пользователя */}
-                    <Button type="primary" style={{ marginLeft: 8 }} onClick={openAddMemberModal}>Добавить пользователя в проект </Button>
-                    <AddMemberModal
-                        visible={isAddMemberVisible}
-                        onCancel={closeAddMemberModal}
-                        projectId={projectId}
-                        refreshProject={refreshProject} // Обновление данных после добавления
-                    />
+                        {/* Тест-планы */}
+                        <Tabs.TabPane
+                            tab={<div style={activeTabKey === "4" ? tabsStyle.activeTabStyle : tabsStyle.tabStyle}>Тест-планы</div>}
+                            key="4"
+                        >
+                            <TestPlansTab
+                                tabsStyle={tabsStyle}
+                                handleTestPlansClick={handleTestPlansClick}
+                                projectId={projectId}
+                            />
+                        </Tabs.TabPane>
 
-                    {/* Кнопка для перехода на страницу тест-планов */}
-                    <Button type="primary" style={{ marginLeft: 8 }} onClick={handleTestPlansClick}>Перейти к тест-планам</Button>
-
-                    {/* Кнопка для перехода на страницу создания тест-плана */}
-                    <Button type="primary" style={{ marginLeft: 8 }} onClick={handleCreateTestPlanClick}>Создать тест-план</Button>
-
-                    {/* Список модулей проекта */}
-                    <ModuleList modules={modules} projectId={projectId} refreshModules={refreshModules} />
-
-
-                    {/* Ссылка на страницу создания модуля для данного проекта */}
-
-                    <Button type="primary" onClick={openModal}>Создать модуль</Button>
-                    <ModuleFormModal
-                        visible={isModalVisible}
-                        onCancel={closeModal}
-                        onOk={closeModal}
-                        projectId={projectId}
-                    />
-
+                        <Tabs.TabPane
+                            tab={<div style={tabsStyle.tabStyle}>Тест-раны</div>}
+                            key="5"
+                        >
+                            {/* Добавьте содержимое для отображения списка тест-ранов */}
+                        </Tabs.TabPane>
+                    </Tabs>
                 </Content>
             </Layout>
-
-
         </div>
     );
 };

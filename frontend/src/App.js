@@ -11,8 +11,6 @@ import ProjectEditPage from './pages/project/ProjectEditPage';
 import ModuleFormModal from './pages/module/ModuleFormModal';
 import ModuleDetailsPage from './pages/module/ModuleDetailsPage';
 import TestCaseForm from './pages/test_case/TestCaseForm';
-import CreateTestPlan from './pages/test_plan/CreateTestPlan';
-import TestPlansPage from './pages/test_plan/TestPlansPage';
 import TestCasesByPlan from './pages/test_plan/TestCasesByPlan';
 
 import AppLayout from './components/Layout';
@@ -37,9 +35,7 @@ function App() {
             <Route path="/testcases/create" element={<TestCaseForm />} />
             <Route path="/testcases/:testCaseId" element={<TestCaseForm />} />
             <Route path="/projects/:projectId/modules/:moduleId/testcases/:testCaseId/edit" element={<TestCaseForm />} />
-            <Route path="/create_test_plan" element={<CreateTestPlan />} />
-            <Route path="/test_plans" element={<TestPlansPage />} />
-            <Route path="/testplan_details" element={<TestCasesByPlan />} />
+            <Route path="/test-plan-details" element={<TestCasesByPlan />} />
         </Routes>
     );
 }
