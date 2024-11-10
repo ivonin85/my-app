@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Collapse, Spin, message, Layout, Button, Modal } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import TestPlanService from '../../services/TestPlanService';
 import TestRunService from '../../services/TestRunService';
 import Navbar from '../../components/Navbar';
@@ -9,11 +9,12 @@ const { Panel } = Collapse;
 
 const TestCasesByPlan = () => {
     const location = useLocation();
-    const { testPlanId } = location.state || {};
+    const { testPlanId, projectId } = location.state || {};
     const [testCasesByModuleAndTag, setTestCasesByModuleAndTag] = useState({});
     const [loading, setLoading] = useState(false);
     const [testPlanDetails, setTestPlanDetails] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
     const { Content } = Layout; 
 
     useEffect(() => {
@@ -52,7 +53,7 @@ const TestCasesByPlan = () => {
     const handleCreateTestRun = async () => {
         const testRunName = `${testPlanDetails.name} - ${new Date().toLocaleDateString()}`;
         try {
-            await TestRunService.createTestRun(testPlanId, testRunName);
+            await TestRunService.createTestRun(testPlanId, projectId, testRunName);
             message.success(`Тест-ран "${testRunName}" успешно создан`);
             setIsModalOpen(false);
         } catch (error) {
@@ -73,9 +74,13 @@ const TestCasesByPlan = () => {
         <div><div><Navbar /></div>
         <Content style={contentStyle}>  
         <h2>{testPlanDetails.name || 'Тест-план'}</h2>
-        <Button style={{ marginBottom: '8px' }}type="primary" onClick={() => setIsModalOpen(true)}>
-                    Создать тест-ран
-                </Button>
+        <Button style={{ marginBottom: '8px' }}type="primary" onClick={() => setIsModalOpen(true)}>Создать тест-ран</Button>
+        <Button 
+            style={{ marginBottom: '8px', marginLeft: '8px' }} 
+            onClick={() => navigate(`/projects/${projectId}`, { state: { activeTabKey: "4" } })}
+        >
+            Назад к тест-планам
+        </Button>
                 <Modal
                     title="Создание тест-рана"
                     visible={isModalOpen}

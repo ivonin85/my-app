@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Layout, Button, Tabs } from 'antd';
 import ModuleList from '../../components/ModuleList';
 import ModuleService from '../../services/ModuleService';
@@ -9,6 +9,7 @@ import Sidebar from '../../components/Sidebar';
 import ModuleFormModal from '../module/ModuleFormModal';
 import AddMemberModal from '../../components/project/AddMemberModal';
 import TestPlansTab from '../../components/project/TestPlansTab';
+import TestRunsTab from '../../components/project/TestRunsTab';
 
 const ProjectDetailsPage = () => {
     const { projectId } = useParams();
@@ -25,7 +26,14 @@ const ProjectDetailsPage = () => {
     const openAddMemberModal = () => setIsAddMemberVisible(true);
     const closeAddMemberModal = () => setIsAddMemberVisible(false);
 
-    const [activeTabKey, setActiveTabKey] = useState("1");
+    const location = useLocation();
+    const [activeTabKey, setActiveTabKey] = useState(location.state?.activeTabKey || "1");
+
+    useEffect(() => {
+        if (location.state?.activeTabKey) {
+            setActiveTabKey(location.state.activeTabKey);
+        }
+    }, [location.state]);
 
     const refreshProject = () => {
         ProjectService.getProjectById(projectId)
@@ -101,6 +109,7 @@ const ProjectDetailsPage = () => {
                         defaultActiveKey="1"
                         tabBarGutter={16}
                         tabBarStyle={{ display: 'flex', flexWrap: 'wrap' }}
+                        activeKey={activeTabKey} onChange={(key) => setActiveTabKey(key)}
                     >
                         <Tabs.TabPane
                             tab={<div style={{ ...tabsStyle.tabStyle, ...(1 === "1" ? tabsStyle.activeTabStyle : {}) }}>О проекте</div>}
@@ -154,7 +163,8 @@ const ProjectDetailsPage = () => {
                             tab={<div style={tabsStyle.tabStyle}>Тест-раны</div>}
                             key="5"
                         >
-                            {/* Добавьте содержимое для отображения списка тест-ранов */}
+                            <TestRunsTab projectId={projectId} />
+                            
                         </Tabs.TabPane>
                     </Tabs>
                 </Content>

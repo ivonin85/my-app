@@ -26,6 +26,10 @@ public class TestRun {
     @OneToMany(mappedBy = "testRun", cascade = CascadeType.ALL)
     private List<TestResult> testResults = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

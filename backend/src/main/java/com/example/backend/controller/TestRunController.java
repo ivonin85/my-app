@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,8 +26,15 @@ public class TestRunController {
             @PathVariable Long testPlanId,
             @RequestBody Map<String, String> requestBody) {
         String testRunName = requestBody.get("name");
-        TestRunDTO testRunDTO = testRunService.createTestRun(testPlanId, testRunName);
+        String projectId = requestBody.get("projectId");
+        TestRunDTO testRunDTO = testRunService.createTestRun(testPlanId, testRunName, Long.valueOf(projectId));
         return ResponseEntity.ok(testRunDTO);
+    }
+
+    @GetMapping("/project-id/{projectId}")
+    public ResponseEntity<List<TestRunDTO>> getTestRunsByProjectId(@PathVariable Long projectId) {
+        List<TestRunDTO> testRuns = testRunService.getTestRunByProjectId(projectId);
+        return ResponseEntity.ok(testRuns);
     }
 
     @PutMapping("/result/{testResultId}/status")

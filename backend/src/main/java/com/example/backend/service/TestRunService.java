@@ -2,10 +2,8 @@ package com.example.backend.service;
 
 import com.example.backend.model.dto.TestResultDTO;
 import com.example.backend.model.dto.TestRunDTO;
-import com.example.backend.model.entity.TestCase;
-import com.example.backend.model.entity.TestPlan;
-import com.example.backend.model.entity.TestResult;
-import com.example.backend.model.entity.TestRun;
+import com.example.backend.model.entity.*;
+import com.example.backend.repository.ProjectRepository;
 import com.example.backend.repository.TestResultRepository;
 import com.example.backend.repository.TestRunRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +21,47 @@ public class TestRunService {
     @Autowired
     private TestResultRepository testResultRepository;
 
-    public TestRunDTO createTestRun(Long testPlanId, String testRunName) {
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    public TestRunDTO createTestRun(Long testPlanId, String testRunName, Long projectId) {
         TestRun testRun = new TestRun();
         testRun.setName(testRunName);
         testRun.setTestPlan(new TestPlan());
         testRun.getTestPlan().setId(testPlanId);
 
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("Проект с id " + projectId + " не найден"));
+        testRun.setProject(project);
+
         TestRun savedTestRun = testRunRepository.save(testRun);
         return toTestRunDTO(savedTestRun);
+    }
+
+    public List<TestRunDTO> getTestRunByProjectId(Long projectId) {
+        List<TestRun> testRuns = testRunRepository.findByProjectId(projectId);
+        return testRuns.stream()
+                .map(testRun -> new TestRunDTO(
+                        testRun.getId(),
+                        testRun.getTestPlan().getId(),
+                        testRun.getProject().getId(),
+                        testRun.getName(),
+                        testRun.getCreatedAt(),
+                        testRun.getUpdatedAt(),
+                        convertTestResultsToDto(testRun.getTestResults())
+                ))
+                .collect(Collectors.toList());
+    }
+
+    private List<TestResultDTO> convertTestResultsToDto(List<TestResult> testResults) {
+        return testResults.stream()
+                .map(testResult -> new TestResultDTO(
+                        testResult.getId(),
+                        testResult.getTestCase().getId(),
+                        testResult.getTestRun().getId(),
+                        testResult.getStatus()
+                ))
+                .collect(Collectors.toList());
     }
 
     public TestRunDTO completeTestRun(Long testRunId) {
@@ -66,6 +97,7 @@ public class TestRunService {
         TestRunDTO dto = new TestRunDTO();
         dto.setId(testRun.getId());
         dto.setTestPlanId(testRun.getTestPlan().getId());
+        dto.setProjectId(testRun.getProject().getId());
 
         List<TestResultDTO> testResultDTOs = testRun.getTestResults()
                 .stream()
@@ -79,7 +111,7 @@ public class TestRunService {
 
         return dto;
     }
-    
+
     private TestResultDTO toTestResultDTO(TestResult testResult) {
         TestResultDTO dto = new TestResultDTO();
         dto.setId(testResult.getId());

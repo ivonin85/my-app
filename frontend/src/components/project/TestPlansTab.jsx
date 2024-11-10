@@ -42,7 +42,7 @@ const TestPlansTab = ({ tabsStyle, handleTestPlansClick, projectId }) => {
     };
 
     const handleRowClick = (record) => {
-        navigate(`/test-plan-details`, { state: { testPlanId: record.id } });
+        navigate(`/test-plan-details`, { state: { testPlanId: record.id,  projectId: projectId} });
     };
 
     const columns = [
