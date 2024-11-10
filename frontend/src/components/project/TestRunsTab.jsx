@@ -29,8 +29,7 @@ const TestRunsTab = ({ projectId }) => {
     const columns = [
         { title: 'ID', dataIndex: 'id', key: 'id' },
         { title: 'Название', dataIndex: 'name', key: 'name' },
-        { title: 'Дата создания', dataIndex: 'creatAt', key: 'createdDate' }
-        // Добавьте другие столбцы по необходимости
+        { title: 'Дата создания', dataIndex: 'creatAt', key: 'creatAt' }
     ];
 
     return <Table dataSource={testRuns} columns={columns} rowKey="id" />;

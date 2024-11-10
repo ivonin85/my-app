@@ -11,7 +11,6 @@ import ProjectEditPage from './pages/project/ProjectEditPage';
 import ModuleFormModal from './pages/module/ModuleFormModal';
 import ModuleDetailsPage from './pages/module/ModuleDetailsPage';
 import TestCaseForm from './pages/test_case/TestCaseForm';
-import TestCasesByPlan from './pages/test_plan/TestCasesByPlan';
 
 import AppLayout from './components/Layout';
 
@@ -35,7 +34,6 @@ function App() {
             <Route path="/testcases/create" element={<TestCaseForm />} />
             <Route path="/testcases/:testCaseId" element={<TestCaseForm />} />
             <Route path="/projects/:projectId/modules/:moduleId/testcases/:testCaseId/edit" element={<TestCaseForm />} />
-            <Route path="/test-plan-details" element={<TestCasesByPlan />} />
         </Routes>
     );
 }

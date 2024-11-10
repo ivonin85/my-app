@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, message, Modal } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Table, Button, message, Modal, Drawer } from 'antd';
 import TestPlanService from '../../services/TestPlanService';
 import CreateTestPlanModal from '../../pages/test_plan/CreateTestPlanModal';
+import TestPlanDetails from '../../pages/test_plan/TestPlanDetails';
 
 const TestPlansTab = ({ tabsStyle, handleTestPlansClick, projectId }) => {
     const [testPlans, setTestPlans] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [isModalVisible, setIsModalVisible] = useState(false); // состояние для видимости модального окна
-    const navigate = useNavigate();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isDrawerVisible, setIsDrawerVisible] = useState(false); // состояние для видимости Drawer
+    const [selectedTestPlan, setSelectedTestPlan] = useState(null); // выбранный тест-план
 
     useEffect(() => {
         if (projectId) {
@@ -29,20 +30,26 @@ const TestPlansTab = ({ tabsStyle, handleTestPlansClick, projectId }) => {
     };
 
     const handleCreateTestPlanClick = () => {
-        setIsModalVisible(true); // показать модальное окно
+        setIsModalVisible(true);
     };
 
     const handleModalCancel = () => {
-        setIsModalVisible(false); // скрыть модальное окно
+        setIsModalVisible(false);
     };
 
     const handleTestPlanCreated = () => {
-        fetchTestPlans(); // обновить список тест-планов после создания нового
+        fetchTestPlans();
         setIsModalVisible(false);
     };
 
     const handleRowClick = (record) => {
-        navigate(`/test-plan-details`, { state: { testPlanId: record.id,  projectId: projectId} });
+        setSelectedTestPlan(record); // сохраняем выбранный тест-план
+        setIsDrawerVisible(true); // открываем Drawer
+    };
+
+    const handleDrawerClose = () => {
+        setIsDrawerVisible(false);
+        setSelectedTestPlan(null); // очищаем выбранный тест-план при закрытии
     };
 
     const columns = [
@@ -88,9 +95,26 @@ const TestPlansTab = ({ tabsStyle, handleTestPlansClick, projectId }) => {
             >
                 <CreateTestPlanModal
                     projectId={projectId}
-                    onTestPlanCreated={handleTestPlanCreated} // обработчик успешного создания тест-плана
+                    onTestPlanCreated={handleTestPlanCreated}
                 />
             </Modal>
+
+            {/* Drawer для отображения деталей тест-плана */}
+            <Drawer
+                title="Детали тест-плана"
+                placement="left"
+                width="95%"
+                onClose={handleDrawerClose}
+                visible={isDrawerVisible}
+            >
+                {selectedTestPlan && (
+                    <TestPlanDetails
+                        testPlanId={selectedTestPlan.id}
+                        projectId={projectId}
+                        onClose={handleDrawerClose} // закрытие Drawer
+                    />
+                )}
+            </Drawer>
         </div>
     );
 };
