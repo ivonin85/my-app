@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { Form, Button, Row, Col, Card, Drawer } from 'antd';
 import TestCaseService from '../../services/TestCaseService';
 import TagService from '../../services/TagService';
@@ -10,9 +9,16 @@ import TestCaseUrlDisplay from '../../components/test_case/TestCaseUrlDisplay';
 import TestCaseMainInfo from '../../components/test_case/TestCaseMainInfo';
 import TestCaseAdditionalInfo from '../../components/test_case/TestCaseAdditionalInfo';
 
-const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, moduleId, testCaseId, onUpdate }) => {
-    const location = useLocation();
-    const { projectId: initialProjectId, moduleId: initialModuleId } = location.state || {};
+const TestCaseForm = ({
+    drawerVisible,
+    openDrawer,
+    closeDrawer,
+    projectId,
+    moduleId,
+    testCaseId,
+    onUpdate,
+    isReadOnly = false, // Новый проп для отключения редактирования
+}) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [preconditions, setPreconditions] = useState('');
@@ -23,24 +29,22 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
     const [requirements, setRequirements] = useState('');
     const [comments, setComments] = useState('');
     const [tags, setTags] = useState([]);
-    const [tagIds, setTagIds] = useState([]);
     const [tagNames, setTagNames] = useState([]);
     const [allTags, setAllTags] = useState([]);
     const [executorId, setExecutorId] = useState(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
         TagService.getAllTags()
-            .then(response => setAllTags(response.data))
-            .catch(error => console.error('Ошибка при загрузке тегов', error));
+            .then((response) => setAllTags(response.data))
+            .catch((error) => console.error('Ошибка при загрузке тегов', error));
 
         ProfileService.getUserProfile()
-            .then(response => setExecutorId(response.data.userId))
-            .catch(error => console.error('Ошибка при загрузке профиля', error));
+            .then((response) => setExecutorId(response.data.userId))
+            .catch((error) => console.error('Ошибка при загрузке профиля', error));
 
         if (testCaseId) {
             TestCaseService.getTestCase(testCaseId)
-                .then(response => {
+                .then((response) => {
                     const testCase = response.data;
                     setTitle(testCase.title);
                     setDescription(testCase.description);
@@ -51,31 +55,29 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
                     setStatus(testCase.status);
                     setRequirements(testCase.requirements);
                     setComments(testCase.comments);
-                    
+
                     TagService.getTagsByTestCaseId(testCaseId)
-                        .then(response => {
+                        .then((response) => {
                             const tags = response.data;
-                            setTagIds(tags.map(tag => tag.id));
-                            setTagNames(tags.map(tag => tag.name));
+                            setTagNames(tags.map((tag) => tag.name));
                         })
-                        .catch(error => {
-                            console.error('Ошибка при загрузке тегов тест-кейса', error);
-                            setTagIds([]);
-                            setTagNames([]);
-                        });
-                    setExecutorId(testCase.executor?.id || null);
+                        .catch((error) => console.error('Ошибка при загрузке тегов тест-кейса', error));
                 })
-                .catch(error => console.error('Ошибка при загрузке тест-кейса', error));
+                .catch((error) => console.error('Ошибка при загрузке тест-кейса', error));
         }
     }, [testCaseId]);
 
     const handleTagChange = (selectedTags) => {
-        setTagNames(selectedTags);
-        const selectedTagObjects = allTags.filter(tag => selectedTags.includes(tag.name));
-        setTagIds(selectedTagObjects.map(tag => tag.id));
+        if (!isReadOnly) {
+            setTagNames(selectedTags);
+            const selectedTagObjects = allTags.filter((tag) => selectedTags.includes(tag.name));
+            setTags(selectedTagObjects.map((tag) => tag.id));
+        }
     };
 
     const handleSubmit = () => {
+        if (isReadOnly) return;
+
         const testCaseData = {
             title,
             description,
@@ -100,76 +102,75 @@ const TestCaseForm = ({ drawerVisible, openDrawer, closeDrawer, projectId, modul
             .then(() => {
                 alert(`Тест-кейс ${testCaseId ? 'обновлен' : 'создан'} успешно!`);
                 closeDrawer();
-              
                 if (onUpdate && typeof onUpdate === 'function') {
                     onUpdate();
                 }
-                navigate(`/projects/${projectId}/modules/${moduleId}`, { state: { projectId, moduleId } });
             })
-            .catch(error => console.error(`Ошибка при ${testCaseId ? 'обновлении' : 'создании'} тест-кейса`, error));
+            .catch((error) => console.error(`Ошибка при ${testCaseId ? 'обновлении' : 'создании'} тест-кейса`, error));
     };
 
-
     return (
-        <div>
-        
-            <Drawer
-                title={testCaseId ? 'Редактирование тест-кейса' : 'Создание тест-кейса'}
-                placement="left"
-                onClose={closeDrawer}
-                visible={drawerVisible}
-                width="95%"
-            >
-                <Form onFinish={handleSubmit} layout="vertical">
-
-                {/* Отображение URL тест-кейса */}
+        <Drawer
+            title={testCaseId ? 'Просмотр тест-кейса' : 'Создание тест-кейса'}
+            placement="left"
+            onClose={closeDrawer}
+            visible={drawerVisible}
+            width="95%"
+        >
+            <Form onFinish={handleSubmit} layout="vertical">
                 {testCaseId && <TestCaseUrlDisplay testCaseId={testCaseId} />}
 
                 <Row gutter={24}>
-                    {/* Левая часть */}
                     <Col span={16}>
-                    
-                    {/* Основная информация тест-кейса */}
-                    <TestCaseMainInfo title={title} setTitle={setTitle} preconditions={preconditions} setPreconditions={setPreconditions} />
-
-                    {/* Шаги тест-кейса */}
-                    <TestCaseSteps steps={steps} setSteps={setSteps} />
+                        <TestCaseMainInfo
+                            title={title}
+                            setTitle={!isReadOnly ? setTitle : undefined}
+                            preconditions={preconditions}
+                            setPreconditions={!isReadOnly ? setPreconditions : undefined}
+                        />
+                        <TestCaseSteps
+                            steps={steps}
+                            setSteps={!isReadOnly ? setSteps : undefined}
+                            isReadOnly={isReadOnly} // передаем флаг для отключения кнопок управления шагами
+                        />
                     </Col>
 
-                    {/* Правая часть */}
                     <Col span={8}>
                         <Card title="Дополнительная информация" bordered={true} style={{ marginBottom: '24px' }}>
-                             {/* Блокс дополнительной информацией тест-кейса */}
                             <TestCaseAdditionalInfo
                                 description={description}
-                                setDescription={setDescription}
+                                setDescription={!isReadOnly ? setDescription : undefined}
                                 priority={priority}
-                                setPriority={setPriority}
+                                setPriority={!isReadOnly ? setPriority : undefined}
                                 severity={severity}
-                                setSeverity={setSeverity}
+                                setSeverity={!isReadOnly ? setSeverity : undefined}
                                 status={status}
-                                setStatus={setStatus}
+                                setStatus={!isReadOnly ? setStatus : undefined}
                                 requirements={requirements}
-                                setRequirements={setRequirements}
+                                setRequirements={!isReadOnly ? setRequirements : undefined}
                             />
-
-                            {/* Теги тест-кейса */}
-                            <TagSelect value={tagNames} onChange={handleTagChange} allTags={allTags} projectId={projectId} />
+                            <TagSelect
+                                value={tagNames}
+                                onChange={!isReadOnly ? handleTagChange : undefined}
+                                allTags={allTags}
+                                projectId={projectId}
+                            />
                         </Card>
                     </Col>
                 </Row>
 
-                <Button type="primary" htmlType="submit">
-                    {testCaseId ? 'Сохранить изменения' : 'Создать тест-кейс'}
-                </Button>
-                
-
-                <Button onClick={closeDrawer} style={{ marginLeft: '8px' }}>
-                    Отменить
-                </Button>
-                </Form>
-            </Drawer>
-        </div>
+                {!isReadOnly && (
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button type="primary" htmlType="submit">
+                            {testCaseId ? 'Сохранить изменения' : 'Создать тест-кейс'}
+                        </Button>
+                        <Button onClick={closeDrawer} style={{ marginLeft: '8px' }}>
+                            Отменить
+                        </Button>
+                    </div>
+                )}
+            </Form>
+        </Drawer>
     );
 };
 

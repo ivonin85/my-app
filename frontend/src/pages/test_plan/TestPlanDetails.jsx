@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Collapse, Spin, message, Layout, Button, Modal } from 'antd';
+import { Table, Collapse, Spin, message, Layout, Button, Modal, Drawer } from 'antd';
 import TestPlanService from '../../services/TestPlanService';
 import TestRunService from '../../services/TestRunService';
+import TestCaseForm from '../test_case/TestCaseForm';
 
 const { Panel } = Collapse;
 const { Content } = Layout;
@@ -11,6 +12,8 @@ const TestPlanDetails = ({ testPlanId, projectId, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [testPlanDetails, setTestPlanDetails] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [drawerVisible, setDrawerVisible] = useState(false);
+    const [selectedTestCaseId, setSelectedTestCaseId] = useState(null);
 
     useEffect(() => {
         const fetchTestCases = async () => {
@@ -63,6 +66,13 @@ const TestPlanDetails = ({ testPlanId, projectId, onClose }) => {
         { title: 'Статус', dataIndex: 'status', key: 'status' }
     ];
 
+    const onRowClick = (record) => ({
+        onClick: () => {
+            setSelectedTestCaseId(record.id);
+            setDrawerVisible(true);
+        }
+    });
+
     const contentStyle = { padding: '24px', background: '#fff', minHeight: '100vh' };
 
     return (
@@ -95,12 +105,29 @@ const TestPlanDetails = ({ testPlanId, projectId, onClose }) => {
                                     columns={columns}
                                     rowKey="id"
                                     pagination={false}
+                                    onRow={onRowClick}
                                 />
                             </div>
                         ))}
                     </Panel>
                 </Collapse>
             ))}
+            <Drawer
+                title="Просмотр тест-кейса"
+                placement="left"
+                visible={drawerVisible}
+                onClose={() => setDrawerVisible(false)}
+                width="95%"
+            >
+                <TestCaseForm
+                    drawerVisible={drawerVisible}
+                    closeDrawer={() => setDrawerVisible(false)}
+                    projectId={projectId}
+                    moduleId={null}
+                    testCaseId={selectedTestCaseId}
+                    isReadOnly={true}
+                />
+            </Drawer>
         </Content>
     );
 };

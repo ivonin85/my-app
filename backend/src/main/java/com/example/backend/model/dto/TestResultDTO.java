@@ -12,4 +12,5 @@ public class TestResultDTO {
     private Long testCaseId;
     private Long testRunId;
     private String status;
+
 }
