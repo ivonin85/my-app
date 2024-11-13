@@ -99,7 +99,12 @@ public class TestPlanService {
                     .toList();
 
             // Преобразуем TestCase в TestCaseDTO
-            TestCaseDTO testCaseDTO = testCaseService.mapToDTO(testCase);
+            // TestCaseDTO testCaseDTO = testCaseService.mapToDTO(testCase);
+
+            TestCaseDTO testCaseDTO = new TestCaseDTO();
+            testCaseDTO.setId(testCase.getId());
+            testCaseDTO.setTitle(testCase.getTitle());
+            testCaseDTO.setPriority(testCase.getPriority());
 
             // Группируем по модулю
             groupedTestCases.computeIfAbsent(moduleName, k -> new HashMap<>());

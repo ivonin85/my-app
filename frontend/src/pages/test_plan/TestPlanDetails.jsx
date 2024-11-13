@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Collapse, Spin, message, Layout, Button, Modal, Drawer } from 'antd';
+import { Table, Collapse, Spin, message, Layout, Button, Modal, Drawer, Tag } from 'antd';
 import TestPlanService from '../../services/TestPlanService';
 import TestRunService from '../../services/TestRunService';
+import TestResultService from '../../services/TestResultService';
 import TestCaseForm from '../test_case/TestCaseForm';
 
 const { Panel } = Collapse;
@@ -14,22 +15,30 @@ const TestPlanDetails = ({ testPlanId, projectId, onClose }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [selectedTestCaseId, setSelectedTestCaseId] = useState(null);
+    const [testResults, setTestResults] = useState({});
+    const [selectedTestRunId, setSelectedTestRunId] = useState(null);
+
 
     useEffect(() => {
-        const fetchTestCases = async () => {
-            setLoading(true);
+        const fetchTestResults = async () => {
+            if (!selectedTestRunId) return;
+            
             try {
-                const data = await TestPlanService.getTestCases(testPlanId);
-                setTestCasesByModuleAndTag(data);
+                const results = await TestResultService.getTestResultsByTestRunId(selectedTestRunId);
+                const resultStatusMap = results.reduce((acc, result) => {
+                    acc[result.testCaseId] = result.status;
+                    return acc;
+                }, {});
+                setTestResults(resultStatusMap);
             } catch (error) {
-                message.error(error.message);
-            } finally {
-                setLoading(false);
+                message.error('Не удалось загрузить статусы тестов');
             }
         };
-
-        fetchTestCases();
-    }, [testPlanId]);
+    
+        if (selectedTestRunId) {
+            fetchTestResults();
+        }
+    }, [selectedTestRunId]);
 
     useEffect(() => {
         const fetchTestPlanDetails = async () => {
@@ -46,24 +55,55 @@ const TestPlanDetails = ({ testPlanId, projectId, onClose }) => {
         }
     }, [testPlanId]);
 
+    useEffect(() => {
+        const fetchTestCases = async () => {
+            try {
+                const cases = await TestPlanService.getTestCases(testPlanId);
+                setTestCasesByModuleAndTag(cases);
+            } catch (error) {
+                message.error('Не удалось загрузить тест-кейсы');
+            }
+        };
+    
+        if (testPlanId) {
+            fetchTestCases();
+        }
+    }, [testPlanId]);
+
     if (loading) return <Spin />;
 
     const handleCreateTestRun = async () => {
         const testRunName = `${testPlanDetails.name} - ${new Date().toLocaleDateString()}`;
         try {
-            await TestRunService.createTestRun(testPlanId, projectId, testRunName);
+            const createdTestRun = await TestRunService.createTestRun(testPlanId, projectId, testRunName);
             message.success(`Тест-ран "${testRunName}" успешно создан`);
+            setSelectedTestRunId(createdTestRun.id); // Сохраняем ID созданного тест-рана
             setIsModalOpen(false);
         } catch (error) {
             message.error('Не удалось создать тест-ран');
         }
     };
 
+
+
+    const renderStatus = (testCaseId) => {
+        const status = testResults[testCaseId] || 'Не протестирован';
+        const statusMap = {
+            'Не протестирован': { color: 'default', text: 'Не протестирован' },
+            'Passed': { color: 'green', text: 'Пройден' },
+            'Failed': { color: 'red', text: 'Провален' },
+            'Blocked': { color: 'orange', text: 'Заблокирован' },
+            'Retest': { color: 'blue', text: 'Ретест' },
+        };
+        const { color, text } = statusMap[status] || { color: 'default', text: 'Не протестирован' };
+        return <Tag color={color}>{text}</Tag>;
+    };
+
     const columns = [
         { title: 'ID', dataIndex: 'id', key: 'id' },
         { title: 'Название', dataIndex: 'title', key: 'title' },
         { title: 'Приоритет', dataIndex: 'priority', key: 'priority' },
-        { title: 'Статус', dataIndex: 'status', key: 'status' }
+        { title: 'Статус', dataIndex: 'id', key: 'status', render: renderStatus },
     ];
 
     const onRowClick = (record) => ({
